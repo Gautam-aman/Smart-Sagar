@@ -6,10 +6,10 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background: #1a1d3a;
+    background: #050505;
     color: white;
     min-height: 100vh;
-    padding: 20px;
+    padding: 0;
 }
 
 .sos-container {
@@ -86,7 +86,7 @@ body {
 .location-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    background: linear-gradient(135deg, #bfbfbf, #7b7b7b);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -109,7 +109,7 @@ body {
 .status-value {
     font-size: 16px;
     font-weight: 600;
-    color: #00d4ff;
+    color: #bfbfbf;
 }
 
 .status-indicator {
@@ -121,7 +121,7 @@ body {
 }
 
 .status-indicator.active {
-    background: #00d4aa;
+    background: #a7a7a7;
 }
 
 .status-indicator.error {
@@ -138,7 +138,7 @@ body {
 #coordinates {
     font-size: 16px;
     font-weight: 500;
-    color: #00d4ff;
+    color: #bfbfbf;
     font-family: monospace;
 }
 
@@ -146,7 +146,7 @@ body {
 .nearest-station-card {
     background:  rgba(0, 100, 150, 0.15);
     backdrop-filter: blur(15px);
-    border: 2px solid rgba(0, 212, 170, 0.3);
+    border: 2px solid rgba(167, 167, 167, 0.3);
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 20px;
@@ -202,8 +202,8 @@ body {
 }
 
 .call-sign {
-    background: rgba(0, 212, 255, 0.2);
-    color: #00d4ff;
+    background: rgba(191, 191, 191, 0.2);
+    color: #bfbfbf;
     padding: 4px 8px;
     border-radius: 6px;
     font-size: 14px;
@@ -211,8 +211,8 @@ body {
 }
 
 .frequency {
-    background: rgba(0, 212, 170, 0.2);
-    color: #00d4aa;
+    background: rgba(167, 167, 167, 0.2);
+    color: #a7a7a7;
     padding: 4px 8px;
     border-radius: 6px;
     font-size: 14px;
@@ -233,7 +233,7 @@ body {
 .distance-value {
     font-size: 20px;
     font-weight: 700;
-    color: #00d4aa;
+    color: #a7a7a7;
 }
 
 .signal-strength-container {
@@ -263,8 +263,8 @@ body {
 .signal-bar:nth-child(4) { height: 20px; }
 .signal-bar:nth-child(5) { height: 24px; }
 
-.signal-strength.excellent .signal-bar { background: #00d4aa; }
-.signal-strength.good .signal-bar:nth-child(-n+4) { background: #00d4ff; }
+.signal-strength.excellent .signal-bar { background: #a7a7a7; }
+.signal-strength.good .signal-bar:nth-child(-n+4) { background: #bfbfbf; }
 .signal-strength.fair .signal-bar:nth-child(-n+3) { background: #ffd700; }
 .signal-strength.poor .signal-bar:nth-child(-n+2) { background: #ff6b6b; }
 
@@ -297,7 +297,7 @@ body {
 }
 
 .navigate-btn {
-    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    background: linear-gradient(135deg, #bfbfbf, #7b7b7b);
 }
 
 .navigate-btn:disabled {
@@ -315,7 +315,7 @@ body {
 .navigate-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, #00b8e6, #0088bb);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(191, 191, 191, 0.3);
 }
 
 /* Stations List Card */
@@ -343,8 +343,8 @@ body {
 }
 
 .station-count {
-    background: rgba(0, 212, 255, 0.2);
-    color: #00d4ff;
+    background: rgba(191, 191, 191, 0.2);
+    color: #bfbfbf;
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -370,7 +370,7 @@ body {
 }
 
 .stations-list::-webkit-scrollbar-thumb {
-    background: rgba(0, 212, 255, 0.5);
+    background: rgba(191, 191, 191, 0.5);
     border-radius: 2px;
 }
 
@@ -385,13 +385,13 @@ body {
 
 .station-item:hover {
     background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(0, 212, 255, 0.3);
+    border-color: rgba(191, 191, 191, 0.3);
     transform: translateY(-2px);
 }
 
 .station-item.nearest {
-    border-color: rgba(0, 212, 170, 0.5);
-    background: rgba(0, 212, 170, 0.1);
+    border-color: rgba(167, 167, 167, 0.5);
+    background: rgba(167, 167, 167, 0.1);
 }
 
 .station-item-header {
@@ -410,7 +410,7 @@ body {
 .station-item-distance {
     font-size: 14px;
     font-weight: 600;
-    color: #00d4aa;
+    color: #a7a7a7;
 }
 
 .station-item-details {
@@ -420,7 +420,7 @@ body {
 }
 
 .station-item-call {
-    color: #00d4ff;
+    color: #bfbfbf;
 }
 
 .station-item-freq {

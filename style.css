@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: #162343;
+    background: #050505;
     min-height: 100vh;
     color: white;
     overflow-x: hidden;
@@ -215,7 +215,7 @@ body {
 }
 
 .population-subtitle {
-    color: #00d4aa;
+    color: #a7a7a7;
     font-size: 14px;
     font-weight: 500;
 }
@@ -252,7 +252,7 @@ body {
 }
 
 .weather-subtitle {
-    color: #00d4aa;
+    color: #a7a7a7;
     font-size: 14px;
     margin-bottom: 20px;
 }

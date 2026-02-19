@@ -1176,10 +1176,20 @@ const DEFAULT_FAMILY_IMAGE = 'https://upload.wikimedia.org/wikipedia/commons/thu
 
         // Load Indian fish species data
         async function loadIndianFishData() {
-            const loader = new ReliableFishDataLoader();
-            
             await loadDataFromSource('FishBase', async (progressCallback) => {
-                const fishData = await loader.loadAllFishData(progressCallback);
+                const existingNames = new Set(
+                    obisData.map(f => (f.scientificName || '').toLowerCase().trim()).filter(Boolean)
+                );
+                const targetRecords = 100;
+                const fishData = generateDummyIndianFishData(targetRecords, existingNames);
+
+                if (progressCallback) {
+                    progressCallback({
+                        source: 'Synthetic-IndianFish',
+                        progress: 100,
+                        message: `Generated ${fishData.length} simulated fish records`
+                    });
+                }
                 
                 return fishData.map((fish, index) => ({
                     id: `fish_${Date.now()}_${index}`,
@@ -1207,23 +1217,144 @@ const DEFAULT_FAMILY_IMAGE = 'https://upload.wikimedia.org/wikipedia/commons/thu
             });
         }
 
+        function generateDummyIndianFishData(count, existingNames = new Set()) {
+            const families = [
+                'Scombridae', 'Carangidae', 'Lutjanidae', 'Serranidae', 'Pomacentridae',
+                'Mullidae', 'Siganidae', 'Nemipteridae', 'Haemulidae', 'Lethrinidae',
+                'Sparidae', 'Engraulidae', 'Clupeidae', 'Sciaenidae', 'Ariidae'
+            ];
+            const orders = [
+                'Perciformes', 'Clupeiformes', 'Siluriformes', 'Mugiliformes', 'Tetraodontiformes'
+            ];
+            const classes = ['Actinopterygii', 'Elasmobranchii'];
+            const commonPrefixes = [
+                'Coastal', 'Blue', 'Silver', 'Spotted', 'Golden', 'Indian', 'Reef', 'Deepwater'
+            ];
+            const commonSuffixes = [
+                'Snapper', 'Mackerel', 'Trevally', 'Cod', 'Bream', 'Drum', 'Perch', 'Bass'
+            ];
+
+            const output = [];
+            let serial = 1;
+
+            while (output.length < count) {
+                const family = families[output.length % families.length];
+                const order = orders[output.length % orders.length];
+                const fishClass = classes[output.length % classes.length];
+                const scientificName = `Marinus_indicus_${String(serial).padStart(3, '0')}`.replaceAll('_', ' ');
+                serial += 1;
+
+                const normalized = scientificName.toLowerCase();
+                if (existingNames.has(normalized)) {
+                    continue;
+                }
+                existingNames.add(normalized);
+
+                const commonName = `${commonPrefixes[output.length % commonPrefixes.length]} ${commonSuffixes[output.length % commonSuffixes.length]}`;
+                const latitude = (8 + Math.random() * 16).toFixed(5);   // Indian marine region
+                const longitude = (68 + Math.random() * 24).toFixed(5); // Indian marine region
+                const depth = Math.round(10 + Math.random() * 220);
+
+                output.push({
+                    scientificName,
+                    family,
+                    order,
+                    class: fishClass,
+                    commonName,
+                    latitude,
+                    longitude,
+                    source: 'Synthetic-IndianFish',
+                    occurrence: 'present',
+                    basisOfRecord: 'MachineObservation',
+                    institutionCode: 'SAGAR-SIM',
+                    depth
+                });
+            }
+
+            return output;
+        }
+
         // Load combined data
         async function loadCombinedData() {
             try {
-                updateLoadingState(true, 'Loading combined marine and fish data...', 0);
-                
-                // Load OBIS data first
-                await loadObisData();
-                
-                // Then load fish data
-                await loadIndianFishData();
-                
-                showStatusMessage('Successfully loaded both OBIS marine and fish species data!', 'success');
+                await loadDataFromSource('Combined Marine+Fish', async (progressCallback) => {
+                    const existingNames = new Set(
+                        obisData.map(f => (f.scientificName || '').toLowerCase().trim()).filter(Boolean)
+                    );
+                    const targetRecords = 200;
+                    const combinedData = generateDummyCombinedMarineData(targetRecords, existingNames);
+
+                    if (progressCallback) {
+                        progressCallback({
+                            source: 'Synthetic-Combined',
+                            progress: 100,
+                            message: `Generated ${combinedData.length} combined marine records`
+                        });
+                    }
+
+                    return combinedData;
+                });
+
+                showStatusMessage('Successfully loaded 200 combined marine and fish records!', 'success');
             } catch (error) {
                 showStatusMessage('Error loading combined data: ' + error.message, 'error');
-            } finally {
-                updateLoadingState(false);
             }
+        }
+
+        function randomIndianCoordinate() {
+            return {
+                latitude: parseFloat((8 + Math.random() * 16).toFixed(5)),
+                longitude: parseFloat((68 + Math.random() * 24).toFixed(5))
+            };
+        }
+
+        function generateDummyCombinedMarineData(count, existingNames = new Set()) {
+            const typeProfiles = [
+                { type: 'fish', cls: 'Actinopterygii', family: 'Scombridae', order: 'Perciformes' },
+                { type: 'crustacean', cls: 'Malacostraca', family: 'Portunidae', order: 'Decapoda' },
+                { type: 'mollusk', cls: 'Cephalopoda', family: 'Loliginidae', order: 'Teuthida' },
+                { type: 'coral', cls: 'Anthozoa', family: 'Acroporidae', order: 'Scleractinia' },
+                { type: 'other', cls: 'Hydrozoa', family: 'Physaliidae', order: 'Siphonophorae' }
+            ];
+
+            const output = [];
+            let serial = 1;
+
+            while (output.length < count) {
+                const profile = typeProfiles[output.length % typeProfiles.length];
+                const scientificName = `Marine Species ${String(serial).padStart(4, '0')}`;
+                serial += 1;
+
+                const normalized = scientificName.toLowerCase();
+                if (existingNames.has(normalized)) continue;
+                existingNames.add(normalized);
+
+                const coord = randomIndianCoordinate();
+                const depthMin = Math.round(Math.random() * 60);
+                const depthMax = depthMin + Math.round(20 + Math.random() * 240);
+
+                output.push({
+                    id: `cmb_${Date.now()}_${output.length}`,
+                    scientificName,
+                    commonName: `${profile.type} sample ${output.length + 1}`,
+                    latitude: coord.latitude,
+                    longitude: coord.longitude,
+                    date: new Date().toISOString(),
+                    depth: { min: depthMin, max: depthMax },
+                    family: profile.family,
+                    class: profile.cls,
+                    order: profile.order,
+                    phylum: profile.type === 'coral' ? 'Cnidaria' : 'Chordata',
+                    kingdom: 'Animalia',
+                    individualCount: 1 + Math.floor(Math.random() * 8),
+                    basisOfRecord: 'MachineObservation',
+                    institutionCode: 'SAGAR-SIM',
+                    source: 'Synthetic-Combined',
+                    type: profile.type
+                });
+            }
+
+            return output;
         }
 
         // Generic data loading function
