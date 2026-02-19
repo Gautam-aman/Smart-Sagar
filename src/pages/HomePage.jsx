@@ -82,6 +82,30 @@ export default function HomePage() {
               <span className="fish-label">Pangas (Pangasius)</span>
               <span className="fish-value">₹280 - ₹350</span>
             </div>
+            <div className="market-item">
+              <span className="fish-label">Pomfret</span>
+              <span className="fish-value">₹620 - ₹1,150</span>
+            </div>
+            <div className="market-item">
+              <span className="fish-label">Mackerel</span>
+              <span className="fish-value">₹260 - ₹540</span>
+            </div>
+            <div className="market-item">
+              <span className="fish-label">Yellowfin Tuna</span>
+              <span className="fish-value">₹780 - ₹1,600</span>
+            </div>
+            <div className="market-item">
+              <span className="fish-label">Tiger Shrimp</span>
+              <span className="fish-value">₹900 - ₹1,950</span>
+            </div>
+            <div className="market-item">
+              <span className="fish-label">Seabass</span>
+              <span className="fish-value">₹480 - ₹990</span>
+            </div>
+            <div className="market-item">
+              <span className="fish-label">Sardine</span>
+              <span className="fish-value">₹180 - ₹360</span>
+            </div>
           </div>
         </div>
 

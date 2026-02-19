@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import Fish3DOverlay from './components/Fish3DOverlay';
 import LegacyPage from './LegacyPage';
 import FishDetectPage from './pages/FishDetectPage';
 import HomePage from './pages/HomePage';
@@ -15,20 +16,25 @@ function NotFoundPage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/index.html" element={<HomePage />} />
-      <Route path="/sos/sos-emergency.html" element={<SosPage />} />
-      <Route path="/wether/index.html" element={<WeatherPage />} />
-      <Route path="/fish_detect/index.html" element={<FishDetectPage />} />
-      <Route path="/dashoardfinal/*" element={<LegacyPage />} />
-      <Route path="/dashboard-main/*" element={<LegacyPage />} />
-      <Route path="/fish-zone/*" element={<LegacyPage />} />
-      <Route path="/fish-population/*" element={<LegacyPage />} />
-      <Route path="/fish deseases/*" element={<LegacyPage />} />
-      <Route path="/fish%20deseases/*" element={<LegacyPage />} />
-      <Route path="/legacy/*" element={<Navigate to="/" replace />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <div className="app-root">
+      <Fish3DOverlay />
+      <div className="route-layer">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/index.html" element={<HomePage />} />
+          <Route path="/sos/sos-emergency.html" element={<SosPage />} />
+          <Route path="/wether/index.html" element={<WeatherPage />} />
+          <Route path="/fish_detect/index.html" element={<FishDetectPage />} />
+          <Route path="/dashoardfinal/*" element={<LegacyPage />} />
+          <Route path="/dashboard-main/*" element={<LegacyPage />} />
+          <Route path="/fish-zone/*" element={<LegacyPage />} />
+          <Route path="/fish-population/*" element={<LegacyPage />} />
+          <Route path="/fish deseases/*" element={<LegacyPage />} />
+          <Route path="/fish%20deseases/*" element={<LegacyPage />} />
+          <Route path="/legacy/*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </div>
+    </div>
   );
 }

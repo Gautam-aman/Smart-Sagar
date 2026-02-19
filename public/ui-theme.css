@@ -351,6 +351,129 @@ canvas {
   50% { background-position: 100% 55%; }
 }
 
+/* Hackathon Polish Layer */
+.container,
+.dashboard-container,
+.sos-container,
+.main-content,
+.dashboard,
+.main-grid,
+.dashboard-grid {
+  gap: clamp(12px, 1.8vw, 22px) !important;
+  padding: clamp(12px, 2vw, 26px) !important;
+}
+
+header,
+.emergency-header,
+.weather-panel,
+.map-container,
+.market-card,
+.population-card,
+.welcome-card,
+.location-status-card,
+.nearest-station-card,
+.stations-list-card,
+.input-section,
+.results-section,
+.map-section,
+.prediction-card,
+.station-item,
+.market-item,
+.location-item,
+.data-summary,
+.filter-section,
+.species-list,
+.zone-legend,
+.zone-table,
+.info-panel,
+.quick-actions,
+.recent-updates,
+.stat-card,
+.card,
+.panel,
+.widget {
+  border-width: 1.5px;
+  border-radius: 18px !important;
+  padding: clamp(14px, 1.7vw, 24px);
+}
+
+.market-card {
+  max-height: min(60vh, 520px);
+  overflow: auto;
+}
+
+.market-grid {
+  gap: 12px !important;
+}
+
+.market-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.market-card::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--ui-accent), var(--ui-accent-2));
+  border-radius: 8px;
+}
+
+#google_translate_element {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 14px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(140deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08));
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+#google_translate_element .goog-te-gadget {
+  color: var(--ui-text) !important;
+  font-family: inherit !important;
+  font-size: 0 !important;
+}
+
+#google_translate_element .goog-te-gadget .goog-te-combo {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08));
+  color: #f8fdff;
+  padding: 9px 36px 9px 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  outline: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+#google_translate_element .goog-te-gadget .goog-te-combo:hover {
+  filter: brightness(1.06);
+}
+
+#google_translate_element .goog-logo-link,
+#google_translate_element .goog-te-gadget span {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .market-card {
+    max-height: none;
+  }
+
+  #google_translate_element {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  #google_translate_element .goog-te-gadget .goog-te-combo {
+    width: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
