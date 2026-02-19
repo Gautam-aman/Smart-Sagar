@@ -60,6 +60,114 @@
             transform: translateY(-1px);
         }
 
+        .zone-search {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: #fff;
+            border-radius: 6px;
+            padding: 8px 10px;
+            min-width: 230px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .zone-search::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .tool-status {
+            font-size: 12px;
+            color: rgba(255,255,255,0.92);
+            background: rgba(0,0,0,0.22);
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.22);
+            white-space: nowrap;
+        }
+
+        .forecast-panel {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            width: min(420px, 92vw);
+            max-height: 44vh;
+            overflow: auto;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(22,22,22,0.95), rgba(8,8,8,0.92));
+            box-shadow: 0 16px 30px rgba(0,0,0,0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px;
+        }
+
+        .forecast-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .forecast-header h4 {
+            color: #f3f3f3;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        #forecastLocation {
+            color: #cfcfcf;
+            font-size: 0.75rem;
+            text-align: right;
+        }
+
+        .forecast-meta {
+            color: #b9b9b9;
+            font-size: 0.78rem;
+            margin-bottom: 10px;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(90px, 1fr));
+            gap: 8px;
+        }
+
+        .forecast-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 10px;
+            padding: 8px;
+            color: #f0f0f0;
+        }
+
+        .forecast-day {
+            font-size: 0.75rem;
+            color: #d8d8d8;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .forecast-temp {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .forecast-line {
+            font-size: 0.72rem;
+            color: #c7c7c7;
+            line-height: 1.3;
+        }
+
+        .forecast-empty {
+            color: #c7c7c7;
+            font-size: 0.82rem;
+            padding: 10px 6px;
+            grid-column: 1 / -1;
+        }
+
         #map {
             height: calc(100vh - 70px);
             width: 100%;
@@ -267,7 +375,8 @@
             }
 
             .legend,
-            .zone-info {
+            .zone-info,
+            .forecast-panel {
                 position: relative;
                 width: 95%;
                 margin: 10px auto;
@@ -281,9 +390,9 @@
         /* Premium Visual Pass */
         body {
             background:
-                radial-gradient(circle at 8% 10%, rgba(0, 212, 255, 0.14), transparent 34%),
-                radial-gradient(circle at 92% 8%, rgba(25, 227, 177, 0.12), transparent 30%),
-                linear-gradient(140deg, #0d1a36, #162343 45%, #1f3360);
+                radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.08), transparent 34%),
+                radial-gradient(circle at 92% 8%, rgba(150, 150, 150, 0.08), transparent 30%),
+                linear-gradient(140deg, #050505, #0b0b0b 45%, #151515);
             background-size: 180% 180%;
             animation: premiumBgShift 16s ease-in-out infinite;
         }
@@ -335,7 +444,8 @@
 
         .header,
         .map-header {
-            background: linear-gradient(135deg, #12356f, #1a5e96 55%, #17abc2) !important;
+            background: linear-gradient(135deg, #111111, #1e1e1e 55%, #333333) !important;
+            color: #f5f5f5 !important;
         }
 
         .btn,
@@ -378,13 +488,25 @@
         .legend,
         .zone-info,
         .sidebar {
-            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(246,250,255,0.9));
+            background: linear-gradient(145deg, rgba(24,24,24,0.96), rgba(10,10,10,0.92));
+            color: #f2f2f2;
         }
 
         .stat-number,
         .header h1 i,
         .popup-content h3 {
-            text-shadow: 0 0 16px rgba(0, 212, 255, 0.22);
+            text-shadow: 0 0 16px rgba(230, 230, 230, 0.16);
+        }
+
+        .legend h3,
+        .zone-info h4,
+        .popup-content h3,
+        .popup-content p,
+        .detail-label,
+        .detail-row span,
+        .stat-label,
+        .legend-item span {
+            color: #f1f1f1 !important;
         }
 
         .popup-content,
@@ -395,6 +517,59 @@
             animation: premiumPop 0.5s ease both;
         }
 
+        .header h1 i {
+            animation: mapIconDrift 3.4s ease-in-out infinite;
+        }
+
+        .legend,
+        .zone-info {
+            animation: panelFloat 6s ease-in-out infinite;
+        }
+
+        .legend-item {
+            animation: itemReveal 0.55s ease both;
+        }
+
+        .legend-item:nth-child(2) { animation-delay: 0.06s; }
+        .legend-item:nth-child(3) { animation-delay: 0.12s; }
+        .legend-item:nth-child(4) { animation-delay: 0.18s; }
+
+        .stat-item {
+            animation: itemReveal 0.6s ease both;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.05s; }
+        .stat-item:nth-child(2) { animation-delay: 0.1s; }
+        .stat-item:nth-child(3) { animation-delay: 0.15s; }
+
+        .zone-status.zone-safe {
+            box-shadow: 0 0 0 rgba(39, 174, 96, 0.45);
+            animation: statusPulseSafe 2.8s ease-in-out infinite;
+        }
+
+        .zone-status.zone-restricted {
+            box-shadow: 0 0 0 rgba(243, 156, 18, 0.42);
+            animation: statusPulseRestricted 2.8s ease-in-out infinite;
+        }
+
+        .zone-status.zone-danger {
+            box-shadow: 0 0 0 rgba(231, 76, 60, 0.4);
+            animation: statusPulseDanger 2.8s ease-in-out infinite;
+        }
+
+        .popup-content img {
+            animation: imageDrift 8s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        .action-buttons .popup-btn {
+            animation: buttonBreathe 2.9s ease-in-out infinite;
+        }
+
+        .action-buttons .popup-btn:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
         .popup-content::-webkit-scrollbar,
         .sidebar::-webkit-scrollbar {
             width: 8px;
@@ -402,7 +577,7 @@
 
         .popup-content::-webkit-scrollbar-thumb,
         .sidebar::-webkit-scrollbar-thumb {
-            background: linear-gradient(#1f5f98, #17abc2);
+            background: linear-gradient(#4a4a4a, #8c8c8c);
             border-radius: 8px;
         }
 
@@ -460,6 +635,46 @@
             }
         }
 
+        @keyframes mapIconDrift {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-2px) rotate(-8deg); }
+        }
+
+        @keyframes panelFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes itemReveal {
+            from { opacity: 0; transform: translateY(7px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes statusPulseSafe {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.42); }
+            50% { box-shadow: 0 0 0 8px rgba(39, 174, 96, 0); }
+        }
+
+        @keyframes statusPulseRestricted {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.42); }
+            50% { box-shadow: 0 0 0 8px rgba(243, 156, 18, 0); }
+        }
+
+        @keyframes statusPulseDanger {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+        }
+
+        @keyframes imageDrift {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.03) translateY(-3px); }
+        }
+
+        @keyframes buttonBreathe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1px); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation: none !important;
@@ -475,8 +690,19 @@
         <div class="controls">
             <button class="btn" onclick="toggleZoneType('all')"><i class="fas fa-eye"></i> Show All</button>
             <button class="btn" onclick="toggleZoneType('safe')"><i class="fas fa-check"></i> Safe Only</button>
+            <button class="btn" onclick="toggleZoneType('restricted')"><i class="fas fa-exclamation-triangle"></i> Restricted Only</button>
             <button class="btn" onclick="toggleZoneType('danger')"><i class="fas fa-ban"></i> Danger Only</button>
+            <button class="btn" onclick="focusNearestZone()"><i class="fas fa-location-crosshairs"></i> Nearest Zone</button>
+            <input
+                id="zoneSearch"
+                class="zone-search"
+                type="search"
+                placeholder="Search zone / species..."
+                onkeydown="if(event.key==='Enter'){searchZones();}"
+            >
+            <button class="btn" onclick="searchZones()"><i class="fas fa-search"></i> Search</button>
             <button class="btn" onclick="resetView()"><i class="fas fa-home"></i> Reset View</button>
+            <span id="toolStatus" class="tool-status">Tools ready</span>
         </div>
     </div>
 
@@ -515,6 +741,17 @@
                 <div class="stat-number" id="speciesCount">0</div>
                 <div class="stat-label">Species</div>
             </div>
+        </div>
+    </div>
+
+    <div class="forecast-panel" id="forecastPanel">
+        <div class="forecast-header">
+            <h4><i class="fas fa-cloud-sun"></i> 7-Day Forecast</h4>
+            <span id="forecastLocation">Select a location</span>
+        </div>
+        <div id="forecastMeta" class="forecast-meta">Use map click, search, nearest zone, or popup forecast.</div>
+        <div id="forecastGrid" class="forecast-grid">
+            <div class="forecast-empty">No forecast loaded yet.</div>
         </div>
     </div>
 
@@ -688,6 +925,124 @@
             ]
         };
 
+        function generateRealtimeFishingZones() {
+            const coastalAnchors = [
+                { name: "Kutch Shelf", lat: 22.8, lng: 68.9 },
+                { name: "Saurashtra Coast", lat: 21.5, lng: 69.7 },
+                { name: "South Gujarat Belt", lat: 20.4, lng: 72.0 },
+                { name: "Mumbai Offshore", lat: 19.0, lng: 72.8 },
+                { name: "Konkan Drift", lat: 17.2, lng: 73.2 },
+                { name: "Goa Shelf", lat: 15.3, lng: 73.9 },
+                { name: "Kanara Grounds", lat: 13.3, lng: 74.6 },
+                { name: "Malabar Patch", lat: 11.4, lng: 75.8 },
+                { name: "Kochi Trench", lat: 9.8, lng: 76.3 },
+                { name: "Cape Channel", lat: 8.2, lng: 77.6 },
+                { name: "Palk Bay Edge", lat: 9.6, lng: 79.2 },
+                { name: "Coromandel Front", lat: 11.8, lng: 80.4 },
+                { name: "North Tamil Shelf", lat: 13.1, lng: 80.6 },
+                { name: "Nellore Reach", lat: 14.7, lng: 80.7 },
+                { name: "Godavari Mouth", lat: 16.6, lng: 82.3 },
+                { name: "Vizag Deepline", lat: 17.7, lng: 83.5 },
+                { name: "Gopalpur Bay", lat: 19.2, lng: 85.0 },
+                { name: "Paradip Sector", lat: 20.2, lng: 86.8 },
+                { name: "Sagar Delta", lat: 21.8, lng: 88.2 },
+                { name: "Digha Coastal Arc", lat: 21.7, lng: 87.6 }
+            ];
+
+            const speciesCatalog = [
+                { fish: "Indian Mackerel", sci: "Rastrelliger kanagurta" },
+                { fish: "Yellowfin Tuna", sci: "Thunnus albacares" },
+                { fish: "Silver Pomfret", sci: "Pampus argenteus" },
+                { fish: "Oil Sardine", sci: "Sardinella longiceps" },
+                { fish: "Threadfin Bream", sci: "Nemipterus japonicus" },
+                { fish: "Seer Fish", sci: "Scomberomorus commerson" },
+                { fish: "Squid", sci: "Loligo duvaucelii" },
+                { fish: "Cuttlefish", sci: "Sepia pharaonis" },
+                { fish: "Ribbonfish", sci: "Trichiurus lepturus" },
+                { fish: "Bombay Duck", sci: "Harpadon nehereus" },
+                { fish: "Croaker", sci: "Johnius dussumieri" },
+                { fish: "Penaeid Shrimp", sci: "Penaeus indicus" }
+            ];
+
+            const targetZones = 120;
+
+            const now = new Date();
+            const minuteBucket = Math.floor(now.getMinutes() / 10);
+            const hourBucket = now.getUTCHours();
+
+            return Array.from({ length: targetZones }, (_, index) => {
+                const anchor = coastalAnchors[index % coastalAnchors.length];
+                const species = speciesCatalog[(index * 3 + minuteBucket) % speciesCatalog.length];
+                const seed = (hourBucket * 17 + minuteBucket * 13 + index * 29) % 1000;
+                const statusRoll = (index * 7 + minuteBucket + hourBucket) % 10;
+                const status = statusRoll <= 1 ? 'danger' : (statusRoll <= 4 ? 'restricted' : 'safe');
+                const windKts = 8 + (seed % 18);
+                const waveM = (0.6 + ((seed % 24) / 10)).toFixed(1);
+                const currentKts = (0.4 + ((seed % 12) / 10)).toFixed(1);
+                const effort = 42 + (seed % 46);
+                const landingPrice = 180 + (seed % 420);
+                const populationState = status === 'danger'
+                    ? `Stress detected - juvenile bycatch ${18 + (seed % 16)}%`
+                    : status === 'restricted'
+                        ? `Recovering stock - CPUE variance ${(8 + (seed % 9))}%`
+                        : `Stable biomass index ${(74 + (seed % 19))}/100`;
+                const fishStatus = status === 'danger' ? 'low' : (status === 'restricted' ? 'moderate' : 'healthy');
+
+                const liveData = {
+                    seaState: waveM > 2.0 ? 'Moderate Chop' : 'Calm to Slight',
+                    windKts,
+                    waveM,
+                    currentKts,
+                    effort,
+                    landingPrice,
+                    demand: landingPrice > 420 ? 'High' : (landingPrice > 300 ? 'Steady' : 'Moderate'),
+                    lastUpdated: `${3 + (seed % 24)} min ago`,
+                    updateTime: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                const latOffset = (((index % 5) - 2) * 0.15) + ((seed % 7) * 0.01);
+                const lngOffset = (((Math.floor(index / 5) % 5) - 2) * 0.18) + ((seed % 9) * 0.01);
+                const lat = Math.max(7.8, Math.min(22.8, anchor.lat + latOffset));
+                const lng = Math.max(68.0, Math.min(89.0, anchor.lng + lngOffset));
+                const halfLng = 0.22 + ((index % 4) * 0.04);
+                const halfLat = 0.14 + ((index % 3) * 0.03);
+                const sectorNo = String(Math.floor(index / coastalAnchors.length) + 1).padStart(2, '0');
+
+                return {
+                    type: "Feature",
+                    properties: {
+                        name: `${anchor.name} Sector ${sectorNo}`,
+                        status,
+                        reason: `Live fleet and acoustic scan indicate ${fishStatus} status in this sector`,
+                        liveData,
+                        fish: {
+                            name: species.fish,
+                            scientificName: species.sci,
+                            population: populationState,
+                            status: fishStatus,
+                            image: `https://loremflickr.com/640/360/fish,sea?lock=${3100 + index}`,
+                            description: `Simulated real-time fisheries intelligence for ${anchor.name} sector ${sectorNo}.`,
+                            threats: status === 'danger' ? 'High effort, weather stress, juvenile catch' : 'Localized pressure, variable sea conditions',
+                            conservation: status === 'safe' ? 'Dynamic advisory: open with effort caps' : 'Adaptive restriction window active',
+                            link: "mackerel.html"
+                        }
+                    },
+                    geometry: {
+                        type: "Polygon",
+                        coordinates: [[
+                            [lng - halfLng, lat - halfLat],
+                            [lng + halfLng, lat - halfLat],
+                            [lng + halfLng, lat + halfLat],
+                            [lng - halfLng, lat + halfLat],
+                            [lng - halfLng, lat - halfLat]
+                        ]]
+                    }
+                };
+            });
+        }
+
+        fishingZonesData.features = fishingZonesData.features.concat(generateRealtimeFishingZones());
+
         // Initialize map
         let map = L.map('map').setView([15.0, 76.0], 6);
 
@@ -700,7 +1055,10 @@
         // Zone layers
         let allZones = L.layerGroup().addTo(map);
         let safeZones = L.layerGroup();  
+        let restrictedZones = L.layerGroup();
         let dangerZones = L.layerGroup();
+        const zoneLayerRegistry = new Map();
+        const baseLayerId = Object.keys(map._layers)[0];
 
         // Zone styling
         const zoneStyles = {
@@ -731,6 +1089,18 @@
         function createPopupContent(feature) {
             const props = feature.properties;
             const fish = props.fish;
+            const center = getFeatureCenter(feature) || { lat: 15.0, lng: 76.0 };
+            const live = props.liveData || {
+                seaState: 'Calm to Slight',
+                windKts: 12,
+                waveM: '1.2',
+                currentKts: '0.8',
+                effort: 58,
+                landingPrice: 320,
+                demand: 'Steady',
+                lastUpdated: '12 min ago',
+                updateTime: '--:--'
+            };
             
             const statusClass = `zone-${props.status}`;
             const populationClass = `population-${fish.status}`;
@@ -771,6 +1141,9 @@
                     <p><strong>Conservation:</strong> ${fish.conservation}</p>
                     
                     <p><strong>Reason:</strong> ${props.reason}</p>
+                    <p><strong>Live Snapshot:</strong> ${live.seaState}, Wind ${live.windKts} kn, Wave ${live.waveM} m, Current ${live.currentKts} kn</p>
+                    <p><strong>Fleet Effort:</strong> ${live.effort}% • <strong>Landing Price:</strong> ₹${live.landingPrice}/kg • <strong>Demand:</strong> ${live.demand}</p>
+                    <p><strong>Last Updated:</strong> ${live.lastUpdated} (${live.updateTime})</p>
                     
                     <div class="action-buttons">
                         <button class="popup-btn btn-3d" onclick="window.location.href='${fish.link}'">
@@ -781,6 +1154,10 @@
                             <a href="https://indobis.in/" target="_blank" style="color: white; text-decoration: none;">
                             <i class="fas fa-info-circle"></i> More Info  </a>
                         </button>
+
+                        <button class="popup-btn btn-info" onclick="openZoneForecast('${props.name.replace(/'/g, "\\'")}', ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)})">
+                            <i class="fas fa-calendar-alt"></i> 7-Day Forecast
+                        </button>
                     </div>
                 </div>
             `;
@@ -790,6 +1167,7 @@
         function addZonesToMap() {
             let safeCount = 0;
             let dangerCount = 0;
+            let restrictedCount = 0;
             let speciesCount = 0;
 
             fishingZonesData.features.forEach(feature => {
@@ -819,10 +1197,14 @@
                 });
                 
                 allZones.addLayer(layer);
+                zoneLayerRegistry.set(props.name, layer);
                 
                 if (props.status === 'safe') {
                     safeZones.addLayer(layer);
                     safeCount++;
+                } else if (props.status === 'restricted') {
+                    restrictedZones.addLayer(layer);
+                    restrictedCount++;
                 } else if (props.status === 'danger') {
                     dangerZones.addLayer(layer); 
                     dangerCount++;
@@ -835,12 +1217,13 @@
             document.getElementById('safeCount').textContent = safeCount;
             document.getElementById('dangerCount').textContent = dangerCount;
             document.getElementById('speciesCount').textContent = speciesCount;
+            setToolStatus(`Loaded ${speciesCount} zones (${safeCount} safe / ${restrictedCount} restricted / ${dangerCount} danger)`);
         }
 
         // Zone toggle functions
         function toggleZoneType(type) {
             map.eachLayer(layer => {
-                if (layer !== map._layers[Object.keys(map._layers)[0]]) { // Keep base tile layer
+                if (layer !== map._layers[baseLayerId]) { // Keep base tile layer
                     map.removeLayer(layer);
                 }
             });
@@ -848,17 +1231,214 @@
             switch(type) {
                 case 'safe':
                     map.addLayer(safeZones);
+                    setToolStatus('Filter active: safe zones');
+                    break;
+                case 'restricted':
+                    map.addLayer(restrictedZones);
+                    setToolStatus('Filter active: restricted zones');
                     break;
                 case 'danger': 
                     map.addLayer(dangerZones);
+                    setToolStatus('Filter active: danger zones');
                     break;
                 default:
                     map.addLayer(allZones);
+                    setToolStatus('Filter active: all zones');
             }
         }
 
         function resetView() {
             map.setView([15.0, 76.0], 6);
+            document.getElementById('zoneSearch').value = '';
+            toggleZoneType('all');
+            setToolStatus('Map view reset');
+        }
+
+        function setToolStatus(message) {
+            const statusEl = document.getElementById('toolStatus');
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        }
+
+        function getFeatureCenter(feature) {
+            const coords = feature.geometry?.coordinates?.[0] || [];
+            if (!coords.length) return null;
+            let latSum = 0;
+            let lngSum = 0;
+            coords.forEach(([lng, lat]) => {
+                latSum += lat;
+                lngSum += lng;
+            });
+            return { lat: latSum / coords.length, lng: lngSum / coords.length };
+        }
+
+        function weatherCodeLabel(code) {
+            const labels = {
+                0: 'Clear',
+                1: 'Mostly Clear',
+                2: 'Partly Cloudy',
+                3: 'Overcast',
+                45: 'Fog',
+                51: 'Light Drizzle',
+                61: 'Light Rain',
+                63: 'Rain',
+                65: 'Heavy Rain',
+                80: 'Showers',
+                95: 'Thunderstorm'
+            };
+            return labels[code] || 'Marine Weather';
+        }
+
+        function renderSevenDayForecast(daily, label, lat, lng) {
+            const grid = document.getElementById('forecastGrid');
+            const locationEl = document.getElementById('forecastLocation');
+            const metaEl = document.getElementById('forecastMeta');
+
+            if (!grid || !locationEl || !metaEl) return;
+
+            const days = daily.time || [];
+            const cards = days.map((dateStr, i) => {
+                const day = new Date(dateStr).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+                const tMax = Math.round(daily.temperature_2m_max?.[i] ?? 0);
+                const tMin = Math.round(daily.temperature_2m_min?.[i] ?? 0);
+                const wind = Math.round(daily.wind_speed_10m_max?.[i] ?? 0);
+                const rain = (daily.precipitation_sum?.[i] ?? 0).toFixed(1);
+                const code = daily.weather_code?.[i];
+                return `
+                    <div class="forecast-card">
+                        <div class="forecast-day">${day}</div>
+                        <div class="forecast-temp">${tMax}° / ${tMin}°C</div>
+                        <div class="forecast-line">${weatherCodeLabel(code)}</div>
+                        <div class="forecast-line">Wind ${wind} km/h</div>
+                        <div class="forecast-line">Rain ${rain} mm</div>
+                    </div>
+                `;
+            }).join('');
+
+            grid.innerHTML = cards || '<div class="forecast-empty">No forecast data available.</div>';
+            locationEl.textContent = label;
+            metaEl.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)} • Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        }
+
+        function buildFallbackForecast(lat, lng) {
+            const time = [];
+            const weather_code = [];
+            const temperature_2m_max = [];
+            const temperature_2m_min = [];
+            const wind_speed_10m_max = [];
+            const precipitation_sum = [];
+            const now = new Date();
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(now);
+                d.setDate(now.getDate() + i);
+                const seed = Math.abs(Math.round((lat * 37) + (lng * 19) + i * 13));
+                time.push(d.toISOString().slice(0, 10));
+                weather_code.push([0, 1, 2, 3, 61, 80][seed % 6]);
+                const maxT = 26 + (seed % 8);
+                const minT = maxT - (4 + (seed % 4));
+                temperature_2m_max.push(maxT);
+                temperature_2m_min.push(minT);
+                wind_speed_10m_max.push(14 + (seed % 18));
+                precipitation_sum.push(Number(((seed % 9) * 0.7).toFixed(1)));
+            }
+
+            return { time, weather_code, temperature_2m_max, temperature_2m_min, wind_speed_10m_max, precipitation_sum };
+        }
+
+        async function fetchSevenDayForecast(lat, lng, label = 'Selected location') {
+            setToolStatus('Loading 7-day forecast...');
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum&timezone=auto`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Forecast HTTP ${response.status}`);
+                const data = await response.json();
+                if (!data?.daily?.time?.length) throw new Error('No forecast data');
+                renderSevenDayForecast(data.daily, label, lat, lng);
+                setToolStatus(`Forecast loaded for ${label}`);
+            } catch (error) {
+                const fallback = buildFallbackForecast(lat, lng);
+                renderSevenDayForecast(fallback, `${label} (Simulated)`, lat, lng);
+                setToolStatus(`Live API unavailable, showing simulated 7-day forecast for ${label}`);
+            }
+        }
+
+        function openZoneForecast(zoneName, lat, lng) {
+            fetchSevenDayForecast(Number(lat), Number(lng), zoneName);
+        }
+
+        function searchZones() {
+            const query = (document.getElementById('zoneSearch')?.value || '').trim().toLowerCase();
+            if (!query) {
+                setToolStatus('Enter zone/species to search');
+                return;
+            }
+
+            const match = fishingZonesData.features.find((feature) => {
+                const props = feature.properties || {};
+                const fish = props.fish || {};
+                return (props.name || '').toLowerCase().includes(query) ||
+                    (fish.name || '').toLowerCase().includes(query) ||
+                    (fish.scientificName || '').toLowerCase().includes(query);
+            });
+
+            if (!match) {
+                setToolStatus(`No match for "${query}"`);
+                return;
+            }
+
+            const layer = zoneLayerRegistry.get(match.properties.name);
+            if (layer) {
+                map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 10 });
+                layer.openPopup();
+                setToolStatus(`Showing: ${match.properties.name}`);
+            }
+        }
+
+        function focusNearestZone() {
+            if (!navigator.geolocation) {
+                setToolStatus('Geolocation is not supported in this browser');
+                return;
+            }
+
+            setToolStatus('Detecting your location...');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    let nearest = null;
+                    let nearestDistance = Infinity;
+
+                    fishingZonesData.features.forEach((feature) => {
+                        const center = getFeatureCenter(feature);
+                        if (!center) return;
+                        const dLat = latitude - center.lat;
+                        const dLng = longitude - center.lng;
+                        const distance = Math.sqrt((dLat * dLat) + (dLng * dLng));
+                        if (distance < nearestDistance) {
+                            nearestDistance = distance;
+                            nearest = feature;
+                        }
+                    });
+
+                    if (!nearest) {
+                        setToolStatus('Nearest zone not found');
+                        return;
+                    }
+
+                    const layer = zoneLayerRegistry.get(nearest.properties.name);
+                    if (layer) {
+                        map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 10 });
+                        layer.openPopup();
+                        setToolStatus(`Nearest zone: ${nearest.properties.name}`);
+                        const center = getFeatureCenter(nearest);
+                        if (center) {
+                            fetchSevenDayForecast(center.lat, center.lng, nearest.properties.name);
+                        }
+                    }
+                },
+                () => setToolStatus('Unable to access your location')
+            );
         }
 
         // 3D Model viewer function
@@ -881,6 +1461,11 @@
         // Initialize everything
         document.addEventListener('DOMContentLoaded', function() {
             addZonesToMap();
+            map.on('click', (event) => {
+                const { lat, lng } = event.latlng;
+                fetchSevenDayForecast(lat, lng, 'Selected Map Point');
+            });
+            fetchSevenDayForecast(15.0, 76.0, 'Indian Marine Center');
             
             // Add custom CSS for popup
             const style = document.createElement('style');

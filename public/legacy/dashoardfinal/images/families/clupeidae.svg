@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title>Marine Family Placeholder</title>
+  <desc>Dummy marine species representative image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f2a43"/>
+      <stop offset="100%" stop-color="#1f6aa5"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <circle cx="88" cy="70" r="26" fill="#ffffff" opacity="0.18"/>
+  <circle cx="560" cy="84" r="22" fill="#ffffff" opacity="0.12"/>
+  <circle cx="512" cy="300" r="30" fill="#ffffff" opacity="0.1"/>
+  <path d="M140 188c50-38 98-55 156-55 80 0 137 39 177 77l67-35-27 56 27 56-67-35c-40 38-97 77-177 77-58 0-106-17-156-55 27-8 44-26 44-43s-17-35-44-43z" fill="#dff1ff" opacity="0.92"/>
+  <circle cx="238" cy="180" r="7" fill="#0c2940"/>
+  <text x="50%" y="318" text-anchor="middle" fill="#eaf5ff" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">Marine Family Representative</text>
+</svg>

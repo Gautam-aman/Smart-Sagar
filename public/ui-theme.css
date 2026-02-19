@@ -793,6 +793,116 @@ header,
   }
 }
 
+/* Global Black Theme Override (All Pages) */
+html,
+body,
+#root {
+  background: #050505 !important;
+  color: #f5f5f5 !important;
+}
+
+body {
+  background-image:
+    radial-gradient(1200px circle at 8% 6%, rgba(255, 255, 255, 0.08), transparent 38%),
+    radial-gradient(900px circle at 92% 8%, rgba(170, 170, 170, 0.07), transparent 35%),
+    linear-gradient(140deg, #050505, #0b0b0b 45%, #161616) !important;
+}
+
+header,
+.header,
+.topbar,
+.dashboard-topbar,
+.map-header,
+.emergency-header,
+.control-panel,
+.controls-panel,
+.legend,
+.zone-info,
+.weather-panel,
+.map-container,
+.card,
+.panel,
+.widget,
+.viewer-container,
+.model-container,
+.species-info,
+.info-panel,
+.popup-content,
+.leaflet-popup-content-wrapper {
+  background: linear-gradient(145deg, rgba(34, 34, 34, 0.95), rgba(12, 12, 12, 0.92)) !important;
+  color: #f2f2f2 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.container,
+.dashboard-container,
+.sos-container,
+.main-content,
+.dashboard,
+.dashboard-grid,
+.main-grid {
+  background: transparent !important;
+}
+
+p,
+span,
+label,
+small,
+li,
+td,
+th,
+.subtitle,
+.status-label,
+.popup-image-caption,
+.popup-image-attribution {
+  color: rgba(245, 245, 245, 0.82) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.card-title,
+.user-name,
+.detail-label,
+strong {
+  color: #f8f8f8 !important;
+}
+
+input,
+select,
+textarea,
+.zone-search {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+
+button,
+.btn,
+.popup-btn,
+.control-button,
+.nav-btn,
+.nav-btn-sos {
+  background: linear-gradient(135deg, #2b2b2b, #4f4f4f) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.safe-color,
+.danger-color,
+.restricted-color,
+.legend-color {
+  filter: saturate(0.85) brightness(0.92);
+}
+
 @keyframes bubbleFloat {
   0%, 100% {
     transform: translateY(0px) scale(1);
