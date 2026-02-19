@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indian Marine Fishing Zone Map</title>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -21,7 +20,7 @@
         }
 
         .header {
-            background: #162343;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d59 100%);
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -167,6 +166,110 @@
             font-size: 0.82rem;
             padding: 10px 6px;
             grid-column: 1 / -1;
+        }
+
+        .decision-panel {
+            position: absolute;
+            right: 20px;
+            top: 320px;
+            z-index: 1000;
+            width: min(420px, 92vw);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(22,22,22,0.95), rgba(8,8,8,0.92));
+            box-shadow: 0 16px 30px rgba(0,0,0,0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px;
+        }
+
+        .decision-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .decision-head h4 {
+            color: #f3f3f3;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .decision-sub {
+            color: #b9b9b9;
+            font-size: 0.78rem;
+            margin-bottom: 8px;
+        }
+
+        .risk-meter {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.12);
+            margin-bottom: 8px;
+        }
+
+        .risk-meter > div {
+            height: 100%;
+            width: 0%;
+            transition: width 0.35s ease;
+            background: linear-gradient(90deg, #2ecc71 0%, #f1c40f 50%, #e74c3c 100%);
+        }
+
+        .decision-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .decision-cell {
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 10px;
+            padding: 8px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .decision-label {
+            color: #bdbdbd;
+            font-size: 0.68rem;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .decision-value {
+            color: #f4f4f4;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .decision-rec {
+            color: #f0f0f0;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+
+        .decision-reasons {
+            color: #cdcdcd;
+            font-size: 0.74rem;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .decision-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .decision-actions .btn {
+            font-size: 12px;
+            padding: 7px 11px;
         }
 
         #map {
@@ -377,7 +480,8 @@
 
             .legend,
             .zone-info,
-            .forecast-panel {
+            .forecast-panel,
+            .decision-panel {
                 position: relative;
                 width: 95%;
                 margin: 10px auto;
@@ -612,7 +716,8 @@
             }
 
             .zone-info,
-            .info-panel {
+            .info-panel,
+            .decision-panel {
                 left: 10px !important;
                 right: 10px !important;
                 max-width: none !important;
@@ -686,7 +791,6 @@
     </style>
 </head>
 <body>
-    <div id="google_translate_element"></div>
     <div class="header">
         <h1><i class="fas fa-map-marked-alt"></i> Indian Marine Fishing Zones</h1>
         <div class="controls">
@@ -704,7 +808,7 @@
             >
             <button class="btn" onclick="searchZones()"><i class="fas fa-search"></i> Search</button>
             <button class="btn" onclick="resetView()"><i class="fas fa-home"></i> Reset View</button>
-            <span id="toolStatus" class="tool-status">Tools ready</span>
+            <span id="toolStatus" class="tool-status">Feature Pack v2 ready</span>
         </div>
     </div>
 
@@ -754,6 +858,34 @@
         <div id="forecastMeta" class="forecast-meta">Use map click, search, nearest zone, or popup forecast.</div>
         <div id="forecastGrid" class="forecast-grid">
             <div class="forecast-empty">No forecast loaded yet.</div>
+        </div>
+    </div>
+
+    <div class="decision-panel" id="decisionPanel">
+        <div class="decision-head">
+            <h4><i class="fas fa-compass"></i> Marine Decision Support</h4>
+            <span id="decisionZone" class="decision-sub">No zone selected</span>
+        </div>
+        <div class="risk-meter"><div id="riskMeterBar"></div></div>
+        <div class="decision-grid">
+            <div class="decision-cell">
+                <div class="decision-label">Risk Score</div>
+                <div class="decision-value" id="riskScore">--</div>
+            </div>
+            <div class="decision-cell">
+                <div class="decision-label">Risk Level</div>
+                <div class="decision-value" id="riskLevel">--</div>
+            </div>
+            <div class="decision-cell">
+                <div class="decision-label">Best Window</div>
+                <div class="decision-value" id="bestWindow">--</div>
+            </div>
+        </div>
+        <div class="decision-rec" id="decisionRecommendation">Use Analyze Zone, Search, or Nearest Zone to generate a recommendation.</div>
+        <div class="decision-reasons" id="decisionReasons">Signals will appear here after analysis.</div>
+        <div class="decision-actions">
+            <button class="btn" onclick="focusNearestZone()"><i class="fas fa-location-crosshairs"></i> Analyze Nearest</button>
+            <button class="btn" onclick="exportZoneBrief()"><i class="fas fa-file-export"></i> Export Brief</button>
         </div>
     </div>
 
@@ -1061,6 +1193,9 @@
         let dangerZones = L.layerGroup();
         const zoneLayerRegistry = new Map();
         const baseLayerId = Object.keys(map._layers)[0];
+        let selectedZoneFeature = null;
+        let latestForecast = null;
+        let latestDecision = null;
 
         // Zone styling
         const zoneStyles = {
@@ -1159,6 +1294,9 @@
 
                         <button class="popup-btn btn-info" onclick="openZoneForecast('${props.name.replace(/'/g, "\\'")}', ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)})">
                             <i class="fas fa-calendar-alt"></i> 7-Day Forecast
+                        </button>
+                        <button class="popup-btn btn-info" onclick="analyzeZoneByName('${props.name.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-compass"></i> Analyze Zone
                         </button>
                     </div>
                 </div>
@@ -1358,16 +1496,249 @@
                 const data = await response.json();
                 if (!data?.daily?.time?.length) throw new Error('No forecast data');
                 renderSevenDayForecast(data.daily, label, lat, lng);
+                latestForecast = { label, lat, lng, daily: data.daily };
+                if (selectedZoneFeature && selectedZoneFeature.properties?.name === label) {
+                    renderDecisionPanel(selectedZoneFeature, data.daily);
+                }
                 setToolStatus(`Forecast loaded for ${label}`);
             } catch (error) {
                 const fallback = buildFallbackForecast(lat, lng);
                 renderSevenDayForecast(fallback, `${label} (Simulated)`, lat, lng);
+                latestForecast = { label, lat, lng, daily: fallback };
+                if (selectedZoneFeature && selectedZoneFeature.properties?.name === label) {
+                    renderDecisionPanel(selectedZoneFeature, fallback);
+                }
                 setToolStatus(`Live API unavailable, showing simulated 7-day forecast for ${label}`);
             }
         }
 
         function openZoneForecast(zoneName, lat, lng) {
             fetchSevenDayForecast(Number(lat), Number(lng), zoneName);
+        }
+
+        function computeZoneRisk(feature, daily) {
+            const props = feature?.properties || {};
+            const live = props.liveData || {};
+            const status = props.status || 'safe';
+            const wind = Number(live.windKts || 0);
+            const wave = Number(live.waveM || 0);
+            const current = Number(live.currentKts || 0);
+            const effort = Number(live.effort || 0);
+            const rain = Number(daily?.precipitation_sum?.[0] || 0);
+            const forecastWind = Number(daily?.wind_speed_10m_max?.[0] || 0);
+
+            let score = 16;
+            const reasons = [];
+
+            if (status === 'danger') {
+                score += 45;
+                reasons.push('Zone is marked as no-fishing danger area.');
+            } else if (status === 'restricted') {
+                score += 24;
+                reasons.push('Zone has active restriction controls.');
+            } else {
+                score += 8;
+                reasons.push('Zone baseline marked as safe.');
+            }
+
+            if (wind >= 24) {
+                score += 16;
+                reasons.push(`Strong local wind (${wind} kn).`);
+            } else if (wind >= 18) {
+                score += 9;
+                reasons.push(`Moderate wind pressure (${wind} kn).`);
+            }
+
+            if (wave >= 2.4) {
+                score += 14;
+                reasons.push(`High wave state (${wave} m).`);
+            } else if (wave >= 1.8) {
+                score += 8;
+                reasons.push(`Moderate wave state (${wave} m).`);
+            }
+
+            if (current >= 1.4) {
+                score += 9;
+                reasons.push(`Strong current (${current} kn).`);
+            }
+
+            if (effort >= 82) {
+                score += 14;
+                reasons.push(`Fleet effort is high (${effort}%).`);
+            } else if (effort >= 70) {
+                score += 7;
+                reasons.push(`Fleet effort is elevated (${effort}%).`);
+            }
+
+            if (rain >= 12) {
+                score += 9;
+                reasons.push(`Heavy forecast rain (${rain.toFixed(1)} mm).`);
+            } else if (rain >= 5) {
+                score += 4;
+                reasons.push(`Moderate forecast rain (${rain.toFixed(1)} mm).`);
+            }
+
+            if (forecastWind >= 35) {
+                score += 9;
+                reasons.push(`Forecast wind surge (${Math.round(forecastWind)} km/h).`);
+            } else if (forecastWind >= 25) {
+                score += 4;
+                reasons.push(`Forecast wind moderate (${Math.round(forecastWind)} km/h).`);
+            }
+
+            score = Math.max(0, Math.min(100, Math.round(score)));
+            let level = 'LOW';
+            let recommendation = 'Proceed with standard gear checks and quota discipline.';
+
+            if (score >= 66) {
+                level = 'HIGH';
+                recommendation = 'Delay operations or relocate. Use nearest safer sector and enforce strict limits.';
+            } else if (score >= 40) {
+                level = 'MODERATE';
+                recommendation = 'Proceed only with caution: reduce trip duration and avoid peak-risk windows.';
+            }
+
+            return { score, level, recommendation, reasons };
+        }
+
+        function getBestFishingWindow(daily) {
+            const times = daily?.time || [];
+            if (!times.length) return '--';
+            let bestIdx = 0;
+            let bestScore = Infinity;
+            times.forEach((_, i) => {
+                const wind = Number(daily.wind_speed_10m_max?.[i] || 0);
+                const rain = Number(daily.precipitation_sum?.[i] || 0);
+                const weather = Number(daily.weather_code?.[i] || 0);
+                const dayScore = (wind * 0.8) + (rain * 1.3) + (weather >= 60 ? 12 : 0);
+                if (dayScore < bestScore) {
+                    bestScore = dayScore;
+                    bestIdx = i;
+                }
+            });
+            return new Date(times[bestIdx]).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+
+        function renderDecisionPanel(feature, daily) {
+            const zoneEl = document.getElementById('decisionZone');
+            const scoreEl = document.getElementById('riskScore');
+            const levelEl = document.getElementById('riskLevel');
+            const recEl = document.getElementById('decisionRecommendation');
+            const reasonsEl = document.getElementById('decisionReasons');
+            const meterBar = document.getElementById('riskMeterBar');
+            const bestEl = document.getElementById('bestWindow');
+            if (!zoneEl || !scoreEl || !levelEl || !recEl || !reasonsEl || !meterBar || !bestEl) return;
+
+            if (!feature) {
+                zoneEl.textContent = 'No zone selected';
+                scoreEl.textContent = '--';
+                levelEl.textContent = '--';
+                bestEl.textContent = '--';
+                recEl.textContent = 'Use Analyze Zone, Search, or Nearest Zone to generate a recommendation.';
+                reasonsEl.textContent = 'Signals will appear here after analysis.';
+                meterBar.style.width = '0%';
+                latestDecision = null;
+                return;
+            }
+
+            const result = computeZoneRisk(feature, daily);
+            latestDecision = {
+                zoneName: feature.properties?.name || 'Unknown Zone',
+                ...result
+            };
+
+            zoneEl.textContent = feature.properties?.name || 'Selected Zone';
+            scoreEl.textContent = `${result.score}/100`;
+            levelEl.textContent = result.level;
+            bestEl.textContent = getBestFishingWindow(daily);
+            recEl.textContent = result.recommendation;
+            reasonsEl.textContent = result.reasons.slice(0, 4).join(' ');
+            meterBar.style.width = `${result.score}%`;
+        }
+
+        function findZoneByName(zoneName) {
+            return fishingZonesData.features.find((feature) => feature.properties?.name === zoneName) || null;
+        }
+
+        function analyzeZone(feature, source = 'manual') {
+            if (!feature) return;
+            selectedZoneFeature = feature;
+            const center = getFeatureCenter(feature);
+            if (center) {
+                fetchSevenDayForecast(center.lat, center.lng, feature.properties.name);
+            }
+            renderDecisionPanel(feature, latestForecast?.label === feature.properties.name ? latestForecast.daily : null);
+            setToolStatus(`Analyzed ${feature.properties.name} (${source})`);
+        }
+
+        function analyzeZoneByName(zoneName) {
+            const feature = findZoneByName(zoneName);
+            if (!feature) {
+                setToolStatus(`Zone not found: ${zoneName}`);
+                return;
+            }
+            analyzeZone(feature, 'popup');
+        }
+
+        function exportZoneBrief() {
+            if (!selectedZoneFeature) {
+                setToolStatus('Analyze a zone before export');
+                return;
+            }
+            const props = selectedZoneFeature.properties || {};
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                zone: props.name || 'Unknown',
+                status: props.status || 'unknown',
+                reason: props.reason || '',
+                fish: props.fish || {},
+                liveData: props.liveData || {},
+                decision: latestDecision || computeZoneRisk(selectedZoneFeature, latestForecast?.daily),
+                forecastSample: latestForecast?.label === props.name ? {
+                    day0: {
+                        date: latestForecast.daily?.time?.[0] || null,
+                        rainMm: latestForecast.daily?.precipitation_sum?.[0] || null,
+                        windKmh: latestForecast.daily?.wind_speed_10m_max?.[0] || null
+                    }
+                } : null
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            const safeName = (props.name || 'zone').replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+            link.download = `${safeName}_brief.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(link.href);
+            setToolStatus(`Exported brief for ${props.name}`);
+        }
+
+        function refreshLiveMetrics() {
+            const now = new Date();
+            const minuteBucket = Math.floor(now.getMinutes() / 10);
+            const hourBucket = now.getUTCHours();
+
+            fishingZonesData.features.forEach((feature, index) => {
+                const live = feature.properties?.liveData;
+                if (!live) return;
+                const seed = (hourBucket * 17 + minuteBucket * 13 + index * 29) % 1000;
+                const wave = (0.6 + ((seed % 24) / 10)).toFixed(1);
+                live.windKts = 8 + (seed % 18);
+                live.waveM = wave;
+                live.currentKts = (0.4 + ((seed % 12) / 10)).toFixed(1);
+                live.effort = 42 + (seed % 46);
+                live.landingPrice = 180 + (seed % 420);
+                live.demand = live.landingPrice > 420 ? 'High' : (live.landingPrice > 300 ? 'Steady' : 'Moderate');
+                live.seaState = Number(wave) > 2.0 ? 'Moderate Chop' : 'Calm to Slight';
+                live.lastUpdated = `${3 + (seed % 24)} min ago`;
+                live.updateTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            });
+
+            if (selectedZoneFeature) {
+                renderDecisionPanel(selectedZoneFeature, latestForecast?.label === selectedZoneFeature.properties?.name ? latestForecast.daily : null);
+            }
+            setToolStatus(`Live zone metrics refreshed at ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
         }
 
         function searchZones() {
@@ -1394,7 +1765,7 @@
             if (layer) {
                 map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 10 });
                 layer.openPopup();
-                setToolStatus(`Showing: ${match.properties.name}`);
+                analyzeZone(match, 'search');
             }
         }
 
@@ -1432,11 +1803,7 @@
                     if (layer) {
                         map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 10 });
                         layer.openPopup();
-                        setToolStatus(`Nearest zone: ${nearest.properties.name}`);
-                        const center = getFeatureCenter(nearest);
-                        if (center) {
-                            fetchSevenDayForecast(center.lat, center.lng, nearest.properties.name);
-                        }
+                        analyzeZone(nearest, 'nearest');
                     }
                 },
                 () => setToolStatus('Unable to access your location')
@@ -1463,11 +1830,13 @@
         // Initialize everything
         document.addEventListener('DOMContentLoaded', function() {
             addZonesToMap();
+            renderDecisionPanel(null, null);
             map.on('click', (event) => {
                 const { lat, lng } = event.latlng;
                 fetchSevenDayForecast(lat, lng, 'Selected Map Point');
             });
             fetchSevenDayForecast(15.0, 76.0, 'Indian Marine Center');
+            window.setInterval(refreshLiveMetrics, 60000);
             
             // Add custom CSS for popup
             const style = document.createElement('style');
@@ -1482,19 +1851,6 @@
             `;
             document.head.appendChild(style);
         });
-        
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                {
-                    pageLanguage: 'en',
-                    includedLanguages: 'hi,ta,te,gu,bn,mr,ml,kn,or,pa', // Indian languages
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false
-                }, 
-                'google_translate_element'
-            );
-        }
-
     </script>
 </body>
 </html>

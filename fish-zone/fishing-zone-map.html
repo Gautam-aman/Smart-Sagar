@@ -171,7 +171,7 @@
         .decision-panel {
             position: absolute;
             right: 20px;
-            top: 90px;
+            top: 320px;
             z-index: 1000;
             width: min(420px, 92vw);
             border: 1px solid rgba(255,255,255,0.2);
@@ -808,7 +808,7 @@
             >
             <button class="btn" onclick="searchZones()"><i class="fas fa-search"></i> Search</button>
             <button class="btn" onclick="resetView()"><i class="fas fa-home"></i> Reset View</button>
-            <span id="toolStatus" class="tool-status">Tools ready</span>
+            <span id="toolStatus" class="tool-status">Feature Pack v2 ready</span>
         </div>
     </div>
 
@@ -1496,16 +1496,249 @@
                 const data = await response.json();
                 if (!data?.daily?.time?.length) throw new Error('No forecast data');
                 renderSevenDayForecast(data.daily, label, lat, lng);
+                latestForecast = { label, lat, lng, daily: data.daily };
+                if (selectedZoneFeature && selectedZoneFeature.properties?.name === label) {
+                    renderDecisionPanel(selectedZoneFeature, data.daily);
+                }
                 setToolStatus(`Forecast loaded for ${label}`);
             } catch (error) {
                 const fallback = buildFallbackForecast(lat, lng);
                 renderSevenDayForecast(fallback, `${label} (Simulated)`, lat, lng);
+                latestForecast = { label, lat, lng, daily: fallback };
+                if (selectedZoneFeature && selectedZoneFeature.properties?.name === label) {
+                    renderDecisionPanel(selectedZoneFeature, fallback);
+                }
                 setToolStatus(`Live API unavailable, showing simulated 7-day forecast for ${label}`);
             }
         }
 
         function openZoneForecast(zoneName, lat, lng) {
             fetchSevenDayForecast(Number(lat), Number(lng), zoneName);
+        }
+
+        function computeZoneRisk(feature, daily) {
+            const props = feature?.properties || {};
+            const live = props.liveData || {};
+            const status = props.status || 'safe';
+            const wind = Number(live.windKts || 0);
+            const wave = Number(live.waveM || 0);
+            const current = Number(live.currentKts || 0);
+            const effort = Number(live.effort || 0);
+            const rain = Number(daily?.precipitation_sum?.[0] || 0);
+            const forecastWind = Number(daily?.wind_speed_10m_max?.[0] || 0);
+
+            let score = 16;
+            const reasons = [];
+
+            if (status === 'danger') {
+                score += 45;
+                reasons.push('Zone is marked as no-fishing danger area.');
+            } else if (status === 'restricted') {
+                score += 24;
+                reasons.push('Zone has active restriction controls.');
+            } else {
+                score += 8;
+                reasons.push('Zone baseline marked as safe.');
+            }
+
+            if (wind >= 24) {
+                score += 16;
+                reasons.push(`Strong local wind (${wind} kn).`);
+            } else if (wind >= 18) {
+                score += 9;
+                reasons.push(`Moderate wind pressure (${wind} kn).`);
+            }
+
+            if (wave >= 2.4) {
+                score += 14;
+                reasons.push(`High wave state (${wave} m).`);
+            } else if (wave >= 1.8) {
+                score += 8;
+                reasons.push(`Moderate wave state (${wave} m).`);
+            }
+
+            if (current >= 1.4) {
+                score += 9;
+                reasons.push(`Strong current (${current} kn).`);
+            }
+
+            if (effort >= 82) {
+                score += 14;
+                reasons.push(`Fleet effort is high (${effort}%).`);
+            } else if (effort >= 70) {
+                score += 7;
+                reasons.push(`Fleet effort is elevated (${effort}%).`);
+            }
+
+            if (rain >= 12) {
+                score += 9;
+                reasons.push(`Heavy forecast rain (${rain.toFixed(1)} mm).`);
+            } else if (rain >= 5) {
+                score += 4;
+                reasons.push(`Moderate forecast rain (${rain.toFixed(1)} mm).`);
+            }
+
+            if (forecastWind >= 35) {
+                score += 9;
+                reasons.push(`Forecast wind surge (${Math.round(forecastWind)} km/h).`);
+            } else if (forecastWind >= 25) {
+                score += 4;
+                reasons.push(`Forecast wind moderate (${Math.round(forecastWind)} km/h).`);
+            }
+
+            score = Math.max(0, Math.min(100, Math.round(score)));
+            let level = 'LOW';
+            let recommendation = 'Proceed with standard gear checks and quota discipline.';
+
+            if (score >= 66) {
+                level = 'HIGH';
+                recommendation = 'Delay operations or relocate. Use nearest safer sector and enforce strict limits.';
+            } else if (score >= 40) {
+                level = 'MODERATE';
+                recommendation = 'Proceed only with caution: reduce trip duration and avoid peak-risk windows.';
+            }
+
+            return { score, level, recommendation, reasons };
+        }
+
+        function getBestFishingWindow(daily) {
+            const times = daily?.time || [];
+            if (!times.length) return '--';
+            let bestIdx = 0;
+            let bestScore = Infinity;
+            times.forEach((_, i) => {
+                const wind = Number(daily.wind_speed_10m_max?.[i] || 0);
+                const rain = Number(daily.precipitation_sum?.[i] || 0);
+                const weather = Number(daily.weather_code?.[i] || 0);
+                const dayScore = (wind * 0.8) + (rain * 1.3) + (weather >= 60 ? 12 : 0);
+                if (dayScore < bestScore) {
+                    bestScore = dayScore;
+                    bestIdx = i;
+                }
+            });
+            return new Date(times[bestIdx]).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+
+        function renderDecisionPanel(feature, daily) {
+            const zoneEl = document.getElementById('decisionZone');
+            const scoreEl = document.getElementById('riskScore');
+            const levelEl = document.getElementById('riskLevel');
+            const recEl = document.getElementById('decisionRecommendation');
+            const reasonsEl = document.getElementById('decisionReasons');
+            const meterBar = document.getElementById('riskMeterBar');
+            const bestEl = document.getElementById('bestWindow');
+            if (!zoneEl || !scoreEl || !levelEl || !recEl || !reasonsEl || !meterBar || !bestEl) return;
+
+            if (!feature) {
+                zoneEl.textContent = 'No zone selected';
+                scoreEl.textContent = '--';
+                levelEl.textContent = '--';
+                bestEl.textContent = '--';
+                recEl.textContent = 'Use Analyze Zone, Search, or Nearest Zone to generate a recommendation.';
+                reasonsEl.textContent = 'Signals will appear here after analysis.';
+                meterBar.style.width = '0%';
+                latestDecision = null;
+                return;
+            }
+
+            const result = computeZoneRisk(feature, daily);
+            latestDecision = {
+                zoneName: feature.properties?.name || 'Unknown Zone',
+                ...result
+            };
+
+            zoneEl.textContent = feature.properties?.name || 'Selected Zone';
+            scoreEl.textContent = `${result.score}/100`;
+            levelEl.textContent = result.level;
+            bestEl.textContent = getBestFishingWindow(daily);
+            recEl.textContent = result.recommendation;
+            reasonsEl.textContent = result.reasons.slice(0, 4).join(' ');
+            meterBar.style.width = `${result.score}%`;
+        }
+
+        function findZoneByName(zoneName) {
+            return fishingZonesData.features.find((feature) => feature.properties?.name === zoneName) || null;
+        }
+
+        function analyzeZone(feature, source = 'manual') {
+            if (!feature) return;
+            selectedZoneFeature = feature;
+            const center = getFeatureCenter(feature);
+            if (center) {
+                fetchSevenDayForecast(center.lat, center.lng, feature.properties.name);
+            }
+            renderDecisionPanel(feature, latestForecast?.label === feature.properties.name ? latestForecast.daily : null);
+            setToolStatus(`Analyzed ${feature.properties.name} (${source})`);
+        }
+
+        function analyzeZoneByName(zoneName) {
+            const feature = findZoneByName(zoneName);
+            if (!feature) {
+                setToolStatus(`Zone not found: ${zoneName}`);
+                return;
+            }
+            analyzeZone(feature, 'popup');
+        }
+
+        function exportZoneBrief() {
+            if (!selectedZoneFeature) {
+                setToolStatus('Analyze a zone before export');
+                return;
+            }
+            const props = selectedZoneFeature.properties || {};
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                zone: props.name || 'Unknown',
+                status: props.status || 'unknown',
+                reason: props.reason || '',
+                fish: props.fish || {},
+                liveData: props.liveData || {},
+                decision: latestDecision || computeZoneRisk(selectedZoneFeature, latestForecast?.daily),
+                forecastSample: latestForecast?.label === props.name ? {
+                    day0: {
+                        date: latestForecast.daily?.time?.[0] || null,
+                        rainMm: latestForecast.daily?.precipitation_sum?.[0] || null,
+                        windKmh: latestForecast.daily?.wind_speed_10m_max?.[0] || null
+                    }
+                } : null
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            const safeName = (props.name || 'zone').replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+            link.download = `${safeName}_brief.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(link.href);
+            setToolStatus(`Exported brief for ${props.name}`);
+        }
+
+        function refreshLiveMetrics() {
+            const now = new Date();
+            const minuteBucket = Math.floor(now.getMinutes() / 10);
+            const hourBucket = now.getUTCHours();
+
+            fishingZonesData.features.forEach((feature, index) => {
+                const live = feature.properties?.liveData;
+                if (!live) return;
+                const seed = (hourBucket * 17 + minuteBucket * 13 + index * 29) % 1000;
+                const wave = (0.6 + ((seed % 24) / 10)).toFixed(1);
+                live.windKts = 8 + (seed % 18);
+                live.waveM = wave;
+                live.currentKts = (0.4 + ((seed % 12) / 10)).toFixed(1);
+                live.effort = 42 + (seed % 46);
+                live.landingPrice = 180 + (seed % 420);
+                live.demand = live.landingPrice > 420 ? 'High' : (live.landingPrice > 300 ? 'Steady' : 'Moderate');
+                live.seaState = Number(wave) > 2.0 ? 'Moderate Chop' : 'Calm to Slight';
+                live.lastUpdated = `${3 + (seed % 24)} min ago`;
+                live.updateTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            });
+
+            if (selectedZoneFeature) {
+                renderDecisionPanel(selectedZoneFeature, latestForecast?.label === selectedZoneFeature.properties?.name ? latestForecast.daily : null);
+            }
+            setToolStatus(`Live zone metrics refreshed at ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
         }
 
         function searchZones() {
@@ -1532,7 +1765,7 @@
             if (layer) {
                 map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 10 });
                 layer.openPopup();
-                setToolStatus(`Showing: ${match.properties.name}`);
+                analyzeZone(match, 'search');
             }
         }
 
@@ -1570,11 +1803,7 @@
                     if (layer) {
                         map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 10 });
                         layer.openPopup();
-                        setToolStatus(`Nearest zone: ${nearest.properties.name}`);
-                        const center = getFeatureCenter(nearest);
-                        if (center) {
-                            fetchSevenDayForecast(center.lat, center.lng, nearest.properties.name);
-                        }
+                        analyzeZone(nearest, 'nearest');
                     }
                 },
                 () => setToolStatus('Unable to access your location')
@@ -1601,11 +1830,13 @@
         // Initialize everything
         document.addEventListener('DOMContentLoaded', function() {
             addZonesToMap();
+            renderDecisionPanel(null, null);
             map.on('click', (event) => {
                 const { lat, lng } = event.latlng;
                 fetchSevenDayForecast(lat, lng, 'Selected Map Point');
             });
             fetchSevenDayForecast(15.0, 76.0, 'Indian Marine Center');
+            window.setInterval(refreshLiveMetrics, 60000);
             
             // Add custom CSS for popup
             const style = document.createElement('style');

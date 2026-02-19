@@ -56,12 +56,60 @@ export default function WeatherPage() {
           </div>
         </div>
 
+        <div className="dashboard-grid">
+          <div className="weather-panel">
+            <div className="weather-info">
+              <h3>⚡ Marine Risk Intelligence</h3>
+              <div id="marine-summary">
+                <p style={{ color: '#7f8c8d', textAlign: 'center', padding: '20px' }}>
+                  Add map locations to generate risk analytics
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="weather-panel">
+            <div className="weather-info">
+              <h3>🚨 Storm Alert Feed</h3>
+              <div id="storm-alert-feed">
+                <p style={{ color: '#7f8c8d', textAlign: 'center', padding: '20px' }}>
+                  No active alerts yet
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="controls-panel">
           <button className="control-button" onClick={() => window.refreshAllData?.()}>
             🔄 Refresh All
           </button>
+          <button className="control-button compare-button" onClick={() => window.compareLocations?.()}>
+            📊 Compare Locations
+          </button>
+          <button id="auto-refresh-btn" className="control-button" onClick={() => window.toggleAutoRefresh?.()}>
+            ⏱️ Auto Refresh: Off
+          </button>
+          <button className="control-button" onClick={() => window.exportWeatherReport?.()}>
+            📥 Export Report
+          </button>
           <button className="control-button clear-button" onClick={() => window.clearAllLocations?.()}>
             🗑️ Clear All
+          </button>
+        </div>
+
+        <div className="controls-panel">
+          <button className="control-button" onClick={() => window.addPresetLocation?.('Mumbai Offshore', 18.95, 72.82)}>
+            📍 Mumbai Offshore
+          </button>
+          <button className="control-button" onClick={() => window.addPresetLocation?.('Kochi Harbor', 9.93, 76.27)}>
+            📍 Kochi Harbor
+          </button>
+          <button className="control-button" onClick={() => window.addPresetLocation?.('Chennai Coast', 13.08, 80.27)}>
+            📍 Chennai Coast
+          </button>
+          <button className="control-button" onClick={() => window.addPresetLocation?.('Visakhapatnam Bay', 17.69, 83.22)}>
+            📍 Vizag Bay
           </button>
         </div>
       </div>

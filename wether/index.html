@@ -50,12 +50,59 @@
             </div>
         </div>
 
+        <div class="dashboard-grid">
+            <div class="weather-panel">
+                <div class="weather-info">
+                    <h3>⚡ Marine Risk Intelligence</h3>
+                    <div id="marine-summary">
+                        <p style="color: #7f8c8d; text-align: center; padding: 20px;">
+                            Add map locations to generate risk analytics
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="weather-panel">
+                <div class="weather-info">
+                    <h3>🚨 Storm Alert Feed</h3>
+                    <div id="storm-alert-feed">
+                        <p style="color: #7f8c8d; text-align: center; padding: 20px;">
+                            No active alerts yet
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="controls-panel">
             <button class="control-button" onclick="refreshAllData()">
                 🔄 Refresh All
             </button>
+            <button class="control-button compare-button" onclick="compareLocations()">
+                📊 Compare Locations
+            </button>
+            <button id="auto-refresh-btn" class="control-button" onclick="toggleAutoRefresh()">
+                ⏱️ Auto Refresh: Off
+            </button>
+            <button class="control-button" onclick="exportWeatherReport()">
+                📥 Export Report
+            </button>
             <button class="control-button clear-button" onclick="clearAllLocations()">
                 🗑️ Clear All
+            </button>
+        </div>
+
+        <div class="controls-panel">
+            <button class="control-button" onclick="addPresetLocation('Mumbai Offshore', 18.95, 72.82)">
+                📍 Mumbai Offshore
+            </button>
+            <button class="control-button" onclick="addPresetLocation('Kochi Harbor', 9.93, 76.27)">
+                📍 Kochi Harbor
+            </button>
+            <button class="control-button" onclick="addPresetLocation('Chennai Coast', 13.08, 80.27)">
+                📍 Chennai Coast
+            </button>
+            <button class="control-button" onclick="addPresetLocation('Visakhapatnam Bay', 17.69, 83.22)">
+                📍 Vizag Bay
             </button>
         </div>
     </div>
