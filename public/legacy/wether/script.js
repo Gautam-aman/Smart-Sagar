@@ -19,6 +19,7 @@ class InteractiveWeatherDetector {
 
     async initialize() {
         try {
+            if (this.map) return;
             await this.initializeMap();
             await this.getCurrentLocation();
             this.setupMapClickHandler();
@@ -32,13 +33,39 @@ class InteractiveWeatherDetector {
     }
 
     async initializeMap() {
-        this.map = L.map('weather-map').setView([15.0, 75.0], 5);
+        const mapContainer = document.getElementById('weather-map');
+        if (!mapContainer) {
+            throw new Error('Weather map container not found');
+        }
+        if (!window.L || typeof window.L.map !== 'function') {
+            throw new Error('Leaflet library not available');
+        }
+
+        // If a previous instance left a bound leaflet id on this container, clear it before re-init.
+        if (mapContainer._leaflet_id) {
+            mapContainer._leaflet_id = null;
+        }
+
+        this.map = L.map(mapContainer).setView([15.0, 75.0], 5);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(this.map);
 
         L.control.scale().addTo(this.map);
+    }
+
+    destroy() {
+        if (this.autoRefreshTimer) {
+            window.clearInterval(this.autoRefreshTimer);
+            this.autoRefreshTimer = null;
+            this.autoRefreshEnabled = false;
+        }
+        if (this.map) {
+            this.map.off();
+            this.map.remove();
+            this.map = null;
+        }
     }
 
     setupMapClickHandler() {
@@ -778,11 +805,35 @@ async fetchWeatherData(lat, lng) {
 
 // Global instance
 let weatherDetector;
+let weatherBootInProgress = null;
+
+async function bootWeatherDetector() {
+    const mapContainer = document.getElementById('weather-map');
+    if (!mapContainer) return;
+
+    if (weatherBootInProgress) {
+        return weatherBootInProgress;
+    }
+
+    weatherBootInProgress = (async () => {
+        try {
+            if (weatherDetector && typeof weatherDetector.destroy === 'function') {
+                weatherDetector.destroy();
+            }
+            weatherDetector = new InteractiveWeatherDetector();
+            window.weatherDetector = weatherDetector;
+            await weatherDetector.initialize();
+        } finally {
+            weatherBootInProgress = null;
+        }
+    })();
+
+    return weatherBootInProgress;
+}
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', async function() {
-    weatherDetector = new InteractiveWeatherDetector();
-    await weatherDetector.initialize();
+    await bootWeatherDetector();
 });
 
 // Global functions for buttons
