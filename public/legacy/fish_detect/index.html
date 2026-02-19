@@ -32,7 +32,18 @@
                     <input type="number" id="years" min="1" max="100" placeholder="e.g., 10">
                 </div>
 
+                <div class="form-group">
+                    <label for="confidenceLevel">Model Confidence Weight: <span id="confidenceValue">70%</span></label>
+                    <input type="range" id="confidenceLevel" min="50" max="95" step="5" value="70">
+                </div>
+
                 <button id="predictBtn" onclick="predictFish()">🔮 Predict Population</button>
+                <div class="quick-tools">
+                    <button class="tool-btn" onclick="pickRandomFish()">🎲 Random Species</button>
+                    <button class="tool-btn" onclick="clearPrediction()">🧹 Clear</button>
+                    <button class="tool-btn" onclick="exportPredictionReport()">📥 Export Report</button>
+                    <button class="tool-btn" onclick="fitMapToDetections()">🗺️ Fit Markers</button>
+                </div>
             </section>
 
             <section class="results-section">
@@ -66,6 +77,19 @@
                             <div id="fishingAdvice" class="advice-box"></div>
                         </div>
                     </div>
+
+                    <div class="insight-grid">
+                        <div class="insight-card"><span>Forecast Horizon</span><strong id="insightHorizon">--</strong></div>
+                        <div class="insight-card"><span>Habitats Mapped</span><strong id="insightHabitats">--</strong></div>
+                        <div class="insight-card"><span>Model Confidence</span><strong id="insightConfidence">--</strong></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <h3>Recent Predictions</h3>
+                <div id="predictionHistory" class="prediction-history">
+                    <p class="history-empty">No predictions yet. Start by selecting a species.</p>
                 </div>
             </section>
 

@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Fish3DOverlay from './components/Fish3DOverlay';
+import GlobalNavbar from './components/GlobalNavbar';
 import LegacyPage from './LegacyPage';
 import FishDetectPage from './pages/FishDetectPage';
 import HomePage from './pages/HomePage';
@@ -18,6 +19,7 @@ export default function App() {
   return (
     <div className="app-root">
       <Fish3DOverlay />
+      <GlobalNavbar />
       <div className="route-layer">
         <Routes>
           <Route path="/" element={<HomePage />} />

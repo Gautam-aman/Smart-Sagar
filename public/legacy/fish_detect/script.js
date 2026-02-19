@@ -58,6 +58,9 @@ let currentMarkers = [];
 let fishNameInput;
 let yearsInput;
 let suggestionsDiv;
+let confidenceInput;
+let predictionHistory = [];
+let lastPredictionPayload = null;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -81,6 +84,7 @@ function initializeEventListeners() {
     fishNameInput = document.getElementById('fishName');
     yearsInput = document.getElementById('years');
     suggestionsDiv = document.getElementById('suggestions');
+    confidenceInput = document.getElementById('confidenceLevel');
     
     // Enter key submission
     fishNameInput.addEventListener('keypress', function(e) {
@@ -94,6 +98,13 @@ function initializeEventListeners() {
             predictFish();
         }
     });
+
+    if (confidenceInput) {
+        const confidenceValue = document.getElementById('confidenceValue');
+        confidenceInput.addEventListener('input', function() {
+            if (confidenceValue) confidenceValue.textContent = `${this.value}%`;
+        });
+    }
 }
 
 // Setup autocomplete functionality
@@ -172,18 +183,20 @@ async function predictFish() {
     }
     
     // Generate predictions
-    const predictions = generatePredictions(fishData, years);
+    const confidence = Number(confidenceInput?.value || 70);
+    const predictions = generatePredictions(fishData, years, confidence);
     
     // Display results
-    displayResults(fishName, fishData, predictions, years);
+    displayResults(fishName, fishData, predictions, years, confidence);
     updateMap(fishData);
+    addPredictionToHistory(fishName, predictions, years, confidence, fishData);
     
     showLoading(false);
     showResults();
 }
 
 // Generate predictions based on current data and years
-function generatePredictions(fishData, years) {
+function generatePredictions(fishData, years, confidence = 70) {
     const currentTrend = fishData.population_trend;
     const extinctionRisk = fishData.extinction_risk;
     
@@ -211,11 +224,15 @@ function generatePredictions(fishData, years) {
     else if (extinctionRisk === 'high') extinctionProbability = Math.min(70, 15 + years * 1.5);
     else if (extinctionRisk === 'moderate') extinctionProbability = Math.min(40, 5 + years * 1);
     else extinctionProbability = Math.min(20, years * 0.5);
+
+    const uncertaintyFactor = (100 - confidence) / 100;
+    extinctionProbability = Math.min(99, extinctionProbability + (uncertaintyFactor * 12));
     
     return {
         futureStatus,
         futureChange,
         extinctionProbability,
+        confidence,
         recommendation: generateRecommendation(extinctionRisk, futureChange)
     };
 }
@@ -246,7 +263,7 @@ function generateRecommendation(extinctionRisk, futureChange) {
 }
 
 // Display prediction results
-function displayResults(fishName, fishData, predictions, years) {
+function displayResults(fishName, fishData, predictions, years, confidence) {
     // Species information
     document.getElementById('speciesName').textContent = fishName;
     document.getElementById('scientificName').textContent = `(${fishData.scientific_name})`;
@@ -275,6 +292,23 @@ function displayResults(fishName, fishData, predictions, years) {
     const adviceBox = document.getElementById('fishingAdvice');
     adviceBox.textContent = predictions.recommendation.message;
     adviceBox.className = `advice-box advice-${predictions.recommendation.type}`;
+
+    const horizonEl = document.getElementById('insightHorizon');
+    const habitatsEl = document.getElementById('insightHabitats');
+    const confidenceEl = document.getElementById('insightConfidence');
+    if (horizonEl) horizonEl.textContent = `${years} years`;
+    if (habitatsEl) habitatsEl.textContent = `${fishData.locations.length}`;
+    if (confidenceEl) confidenceEl.textContent = `${confidence}%`;
+
+    lastPredictionPayload = {
+        generatedAt: new Date().toISOString(),
+        species: fishName,
+        scientificName: fishData.scientific_name,
+        years,
+        confidence,
+        forecast: predictions,
+        conservation: fishData.conservation_status
+    };
 }
 
 // Update map with fish locations
@@ -312,6 +346,89 @@ function updateMap(fishData) {
     } else {
         map.setView([fishData.locations[0].lat, fishData.locations[0].lng], 6);
     }
+}
+
+function addPredictionToHistory(fishName, predictions, years, confidence, fishData) {
+    predictionHistory.unshift({
+        fishName,
+        years,
+        confidence,
+        risk: predictions.extinctionProbability.toFixed(1),
+        trend: predictions.futureStatus,
+        recommendation: predictions.recommendation.type,
+        time: new Date().toLocaleTimeString(),
+        conservation: fishData.conservation_status
+    });
+    predictionHistory = predictionHistory.slice(0, 8);
+    renderPredictionHistory();
+}
+
+function renderPredictionHistory() {
+    const container = document.getElementById('predictionHistory');
+    if (!container) return;
+
+    if (!predictionHistory.length) {
+        container.innerHTML = '<p class="history-empty">No predictions yet. Start by selecting a species.</p>';
+        return;
+    }
+
+    container.innerHTML = predictionHistory.map((row) => `
+        <div class="history-item">
+            <div class="history-title">${row.fishName} <span>${row.time}</span></div>
+            <div class="history-meta">
+                <span>${row.years}y horizon</span>
+                <span>Confidence ${row.confidence}%</span>
+                <span>Risk ${row.risk}%</span>
+                <span>${row.conservation}</span>
+            </div>
+            <div class="history-trend ${row.recommendation}">${row.trend}</div>
+        </div>
+    `).join('');
+}
+
+function clearPrediction() {
+    fishNameInput.value = '';
+    yearsInput.value = '';
+    if (confidenceInput) confidenceInput.value = 70;
+    const confidenceValue = document.getElementById('confidenceValue');
+    if (confidenceValue) confidenceValue.textContent = '70%';
+    hideResults();
+}
+
+function pickRandomFish() {
+    const names = Object.keys(fishDatabase);
+    const random = names[Math.floor(Math.random() * names.length)];
+    selectFish(random);
+    if (!yearsInput.value) yearsInput.value = 10;
+}
+
+function fitMapToDetections() {
+    if (!currentMarkers.length) return;
+    if (currentMarkers.length === 1) {
+        map.setView(currentMarkers[0].getLatLng(), 6);
+        return;
+    }
+    const group = new L.featureGroup(currentMarkers);
+    map.fitBounds(group.getBounds().pad(0.15));
+}
+
+function exportPredictionReport() {
+    if (!lastPredictionPayload) {
+        alert('Generate at least one prediction before exporting.');
+        return;
+    }
+    const payload = {
+        ...lastPredictionPayload,
+        recentHistory: predictionHistory
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `fish_prediction_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(link.href);
 }
 
 // Utility functions
@@ -369,3 +486,9 @@ function googleTranslateElementInit() {
                 'google_translate_element'
             );
         }
+
+window.predictFish = predictFish;
+window.pickRandomFish = pickRandomFish;
+window.clearPrediction = clearPrediction;
+window.fitMapToDetections = fitMapToDetections;
+window.exportPredictionReport = exportPredictionReport;
