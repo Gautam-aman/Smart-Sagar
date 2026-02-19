@@ -1556,19 +1556,23 @@ const DEFAULT_FAMILY_IMAGE = 'https://upload.wikimedia.org/wikipedia/commons/thu
             return icons[type] || icons['fish'];
         }
 
-
-                // Get family image URL
+        // Get family image URL
         function getFamilyImage(familyName) {
             if (!familyName || familyName === 'Unknown') {
                 return DEFAULT_FAMILY_IMAGE;
             }
-            
-            // Clean and normalize family name
-            const normalizedFamily = familyName.trim();
-            
-            // Fallback image for unknown families
-const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.jpg';
 
+            const normalizedFamily = familyName.trim();
+            const familyImageMap = {
+                Scombridae: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Katsuwonus_pelamis.jpg/640px-Katsuwonus_pelamis.jpg',
+                Carangidae: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Caranx_ignobilis.jpg/640px-Caranx_ignobilis.jpg',
+                Lutjanidae: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Lutjanus_kasmira.jpg/640px-Lutjanus_kasmira.jpg',
+                Serranidae: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Epinephelus_lanceolatus_01.jpg/640px-Epinephelus_lanceolatus_01.jpg',
+                Clupeidae: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Alosa_alosa.jpg/640px-Alosa_alosa.jpg',
+                Engraulidae: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Engraulis_encrasicolus.jpg/640px-Engraulis_encrasicolus.jpg'
+            };
+
+            return familyImageMap[normalizedFamily] || DEFAULT_FAMILY_IMAGE;
         }
 
         // Check if image exists (optional - for better error handling)
@@ -1637,7 +1641,7 @@ const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.jpg';
                     <div class="species-item" onclick="focusOnSpecies('${species.replace(/'/g, "\\'")}')">
                         <div class="species-name">${species}</div>
                         <div class="species-info">
-                            ${firstRecord.family} • ${firstRecord.type} • ${records.length} record${records.length > 1 ? 's' : ''}
+                            ${firstRecord.family} • ${firstRecord.class || 'Unknown class'} • ${firstRecord.type} • ${records.length} record${records.length > 1 ? 's' : ''}
                         </div>
                         <div class="species-source">
                             Sources: ${sources.join(', ')}
