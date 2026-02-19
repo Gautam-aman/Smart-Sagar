@@ -26,6 +26,15 @@ const indianCoastalRadioStations = [
 let userLocation = null;
 let nearestStations = [];
 let nearestStation = null;
+let autoLocationRefreshTimer = null;
+let responseTimer = null;
+let distressStartTime = null;
+let emergencyProfile = {
+    incidentType: 'distress',
+    severity: 'high',
+    crewCount: 5,
+    medicalAidRequired: false
+};
 
 // Initialize the SOS page
 document.addEventListener('DOMContentLoaded', function() {
@@ -35,6 +44,20 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeSOS() {
     updateLocationStatus("Getting your location...", "loading");
     getCurrentLocation();
+    setupAutoRefresh();
+    syncProfileToUI();
+    updateReadinessChecklist();
+}
+
+function setupAutoRefresh() {
+    if (autoLocationRefreshTimer) {
+        window.clearInterval(autoLocationRefreshTimer);
+    }
+    autoLocationRefreshTimer = window.setInterval(() => {
+        if (userLocation) {
+            getCurrentLocation();
+        }
+    }, 120000);
 }
 
 // Get user's current location
@@ -343,6 +366,136 @@ ${userLocation ? document.getElementById('coordinates').textContent : 'Location 
     }, 2000);
 }
 
+function setIncidentType(type) {
+    emergencyProfile.incidentType = type || 'distress';
+    const summary = document.getElementById('incidentSummary');
+    if (summary) {
+        const labels = {
+            distress: 'Vessel Distress',
+            medical: 'Medical Emergency',
+            engine: 'Engine Failure',
+            weather: 'Severe Weather',
+            man_overboard: 'Man Overboard'
+        };
+        summary.textContent = labels[emergencyProfile.incidentType] || 'Vessel Distress';
+    }
+}
+
+function setSeverityLevel(level) {
+    emergencyProfile.severity = level || 'high';
+    const badge = document.querySelector('.emergency-badge');
+    if (!badge) return;
+    badge.textContent = level === 'critical' ? 'CRITICAL' : (level === 'moderate' ? 'MODERATE' : 'PRIORITY');
+}
+
+function setCrewCount(count) {
+    emergencyProfile.crewCount = Math.max(1, Number(count || 1));
+    const crewSummary = document.getElementById('crewSummary');
+    if (crewSummary) crewSummary.textContent = String(emergencyProfile.crewCount);
+}
+
+function setMedicalAidRequired(enabled) {
+    emergencyProfile.medicalAidRequired = !!enabled;
+}
+
+function syncProfileToUI() {
+    setIncidentType(emergencyProfile.incidentType);
+    setSeverityLevel(emergencyProfile.severity);
+    setCrewCount(emergencyProfile.crewCount);
+    const med = document.getElementById('medicalAidToggle');
+    if (med) med.checked = emergencyProfile.medicalAidRequired;
+}
+
+function formatElapsed(ms) {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const min = String(Math.floor(total / 60)).padStart(2, '0');
+    const sec = String(total % 60).padStart(2, '0');
+    return `${min}:${sec}`;
+}
+
+function startDistressProtocol() {
+    distressStartTime = Date.now();
+    const protocolStatus = document.getElementById('protocolStatus');
+    if (protocolStatus) protocolStatus.textContent = 'Active';
+    updateReadinessChecklist();
+
+    if (responseTimer) {
+        window.clearInterval(responseTimer);
+    }
+    responseTimer = window.setInterval(() => {
+        const timerEl = document.getElementById('responseTimer');
+        const nextEl = document.getElementById('nextBroadcast');
+        if (timerEl) timerEl.textContent = formatElapsed(Date.now() - distressStartTime);
+        if (nextEl) {
+            const nextMs = 5 * 60 * 1000 - ((Date.now() - distressStartTime) % (5 * 60 * 1000));
+            nextEl.textContent = formatElapsed(nextMs);
+        }
+    }, 1000);
+
+    const callBtn = document.getElementById('emergencyCallBtn');
+    if (callBtn) {
+        callBtn.classList.add('active-alert');
+    }
+}
+
+function markCrewSafe() {
+    if (responseTimer) {
+        window.clearInterval(responseTimer);
+        responseTimer = null;
+    }
+    distressStartTime = null;
+    const protocolStatus = document.getElementById('protocolStatus');
+    const timerEl = document.getElementById('responseTimer');
+    const nextEl = document.getElementById('nextBroadcast');
+    if (protocolStatus) protocolStatus.textContent = 'Resolved';
+    if (timerEl) timerEl.textContent = '00:00';
+    if (nextEl) nextEl.textContent = '--:--';
+    const callBtn = document.getElementById('emergencyCallBtn');
+    if (callBtn) {
+        callBtn.classList.remove('active-alert');
+    }
+}
+
+function updateReadinessChecklist() {
+    const checks = Array.from(document.querySelectorAll('.checklist-item'));
+    const scoreEl = document.getElementById('readinessScore');
+    if (!checks.length || !scoreEl) return;
+    const done = checks.filter((c) => c.checked).length;
+    const score = Math.round((done / checks.length) * 100);
+    scoreEl.textContent = `Readiness ${score}%`;
+}
+
+function buildEmergencyBrief() {
+    const coords = document.getElementById('coordinates')?.textContent || 'Unknown';
+    const station = nearestStation ? `${nearestStation.name} (${nearestStation.callSign}, ${nearestStation.freq})` : 'Unknown';
+    const distance = nearestStation ? `${nearestStation.distance.toFixed(1)} km` : 'Unknown';
+    const incidentLabel = document.getElementById('incidentSummary')?.textContent || 'Vessel Distress';
+    const elapsed = document.getElementById('responseTimer')?.textContent || '00:00';
+    return `SOS EMERGENCY BRIEF
+Time: ${new Date().toLocaleString()}
+Incident: ${incidentLabel}
+Severity: ${emergencyProfile.severity.toUpperCase()}
+Crew Count: ${emergencyProfile.crewCount}
+Medical Aid Required: ${emergencyProfile.medicalAidRequired ? 'YES' : 'NO'}
+Coordinates: ${coords}
+Nearest Radio Station: ${station}
+Distance to Station: ${distance}
+Alert Elapsed: ${elapsed}
+Google Maps: https://maps.google.com/?q=${userLocation ? `${userLocation.lat},${userLocation.lng}` : ''}`;
+}
+
+function exportEmergencyBrief() {
+    const text = buildEmergencyBrief();
+    const blob = new Blob([text], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `sos_brief_${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(link.href);
+}
+
 // Refresh location
 function refreshLocation() {
     const refreshBtn = document.querySelector('.refresh-btn');
@@ -386,30 +539,35 @@ Google Maps: https://maps.google.com/?q=${userLocation.lat},${userLocation.lng}`
     }
 }
 
-// Auto-refresh location every 2 minutes in emergency mode
-setInterval(() => {
-    if (userLocation) {
-        getCurrentLocation();
-    }
-}, 120000); // 2 minutes
+// Add emergency keyboard shortcuts once
+if (!window.__sosKeybindsAttached) {
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F1' || (e.ctrlKey && e.key === 'e')) {
+            e.preventDefault();
+            initiateEmergencyCall();
+        }
 
-// Add emergency keyboard shortcuts
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F1' || (e.ctrlKey && e.key === 'e')) {
-        e.preventDefault();
-        initiateEmergencyCall();
-    }
+        if (e.key === 'F2' || (e.ctrlKey && e.key === 'n')) {
+            e.preventDefault();
+            navigateToStation();
+        }
 
-    if (e.key === 'F2' || (e.ctrlKey && e.key === 'n')) {
-        e.preventDefault();
-        navigateToStation();
-    }
+        if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+            e.preventDefault();
+            refreshLocation();
+        }
+    });
+    window.__sosKeybindsAttached = true;
+}
 
-    if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
-        e.preventDefault();
-        refreshLocation();
-    }
-});
+window.setIncidentType = setIncidentType;
+window.setSeverityLevel = setSeverityLevel;
+window.setCrewCount = setCrewCount;
+window.setMedicalAidRequired = setMedicalAidRequired;
+window.startDistressProtocol = startDistressProtocol;
+window.markCrewSafe = markCrewSafe;
+window.updateReadinessChecklist = updateReadinessChecklist;
+window.exportEmergencyBrief = exportEmergencyBrief;
 
 function googleTranslateElementInit() {
             new google.translate.TranslateElement(

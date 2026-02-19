@@ -892,7 +892,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // Indian Marine Fishing Zones Data
-        const fishingZonesData = {
+        var fishingZonesData = {
             "type": "FeatureCollection",
             "features": [
                 {
@@ -1186,21 +1186,24 @@
             window.__fishZoneMap.remove();
             window.__fishZoneMap = null;
         }
-        const mapContainerEl = document.getElementById('map');
+        var mapContainerEl = document.getElementById('map');
         if (mapContainerEl && mapContainerEl._leaflet_id) {
             mapContainerEl._leaflet_id = null;
         }
 
         // Initialize map safely
-        let map = null;
+        var map = null;
+        var baseTileLayer = null;
+        var baseLayerId = null;
         if (window.L && mapContainerEl) {
             try {
                 map = L.map('map').setView([15.0, 76.0], 6);
                 window.__fishZoneMap = map;
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                baseTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 18,
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
+                baseLayerId = Object.keys(map._layers)[0];
             } catch (error) {
                 console.error('Fishing zone map failed to initialize:', error);
             }
@@ -1209,18 +1212,17 @@
         }
 
         // Zone layers
-        let allZones = L.layerGroup().addTo(map);
-        let safeZones = L.layerGroup();  
-        let restrictedZones = L.layerGroup();
-        let dangerZones = L.layerGroup();
-        const zoneLayerRegistry = new Map();
-        const baseLayerId = map ? Object.keys(map._layers)[0] : null;
-        let selectedZoneFeature = null;
-        let latestForecast = null;
-        let latestDecision = null;
+        var allZones = L.layerGroup();
+        var safeZones = L.layerGroup();
+        var restrictedZones = L.layerGroup();
+        var dangerZones = L.layerGroup();
+        var zoneLayerRegistry = new Map();
+        var selectedZoneFeature = null;
+        var latestForecast = null;
+        var latestDecision = null;
 
         // Zone styling
-        const zoneStyles = {
+        var zoneStyles = {
             safe: {
                 color: '#27ae60',
                 fillColor: '#27ae60', 
@@ -1331,6 +1333,13 @@
                 setToolStatus('Map failed to initialize');
                 return;
             }
+            allZones.clearLayers();
+            safeZones.clearLayers();
+            restrictedZones.clearLayers();
+            dangerZones.clearLayers();
+            zoneLayerRegistry.clear();
+            allZones.addTo(map);
+
             let safeCount = 0;
             let dangerCount = 0;
             let restrictedCount = 0;
@@ -1390,7 +1399,7 @@
         function toggleZoneType(type) {
             if (!map) return;
             map.eachLayer(layer => {
-                if (layer !== map._layers[baseLayerId]) { // Keep base tile layer
+                if (layer !== baseTileLayer && (!baseLayerId || layer !== map._layers[baseLayerId])) { // Keep base tile layer
                     map.removeLayer(layer);
                 }
             });
@@ -1856,13 +1865,39 @@
         }
 
         // Initialize everything
+        var initRetryCount = 0;
+
         function initFishingZonePage() {
             if (!map) {
-                setToolStatus('Map unavailable - please reload this page');
+                if (window.L && document.getElementById('map')) {
+                    try {
+                        map = L.map('map').setView([15.0, 76.0], 6);
+                        window.__fishZoneMap = map;
+                        baseTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 18,
+                            attribution: '© OpenStreetMap contributors'
+                        }).addTo(map);
+                        baseLayerId = Object.keys(map._layers)[0];
+                    } catch (error) {
+                        console.error('Fishing zone map late-init failed:', error);
+                    }
+                }
+            }
+
+            if (!map) {
+                if (initRetryCount < 6) {
+                    initRetryCount += 1;
+                    setToolStatus('Loading fishing zone map...');
+                    window.setTimeout(initFishingZonePage, 300);
+                } else {
+                    setToolStatus('Map unavailable - please reload this page');
+                }
                 return;
             }
             addZonesToMap();
             renderDecisionPanel(null, null);
+            map.invalidateSize();
+            window.setTimeout(() => map && map.invalidateSize(), 200);
             map.on('click', (event) => {
                 const { lat, lng } = event.latlng;
                 fetchSevenDayForecast(lat, lng, 'Selected Map Point');

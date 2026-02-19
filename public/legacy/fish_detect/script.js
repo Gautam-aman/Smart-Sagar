@@ -1,5 +1,5 @@
 // Fish database (in production, this would come from an API)
-const fishDatabase = {
+var fishDatabase = {
     "Atlantic Cod": {
         scientific_name: "Gadus morhua",
         locations: [
@@ -53,25 +53,43 @@ const fishDatabase = {
 };
 
 // Global variables
-let map;
-let currentMarkers = [];
-let fishNameInput;
-let yearsInput;
-let suggestionsDiv;
-let confidenceInput;
-let predictionHistory = [];
-let lastPredictionPayload = null;
+var map;
+var currentMarkers = [];
+var fishNameInput;
+var yearsInput;
+var suggestionsDiv;
+var confidenceInput;
+var predictionHistory = [];
+var lastPredictionPayload = null;
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
+function initFishDetectPage() {
     initializeMap();
     initializeEventListeners();
     setupAutoComplete();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFishDetectPage, { once: true });
+} else {
+    initFishDetectPage();
+}
 
 // Initialize the Leaflet map
 function initializeMap() {
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer || !window.L) return;
+
+    if (window.__fishDetectMap && typeof window.__fishDetectMap.remove === 'function') {
+        window.__fishDetectMap.remove();
+        window.__fishDetectMap = null;
+    }
+    if (mapContainer._leaflet_id) {
+        mapContainer._leaflet_id = null;
+    }
+
     map = L.map('map').setView([40, -30], 3);
+    window.__fishDetectMap = map;
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
@@ -137,11 +155,14 @@ function setupAutoComplete() {
     });
     
     // Hide suggestions when clicking elsewhere
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.form-group')) {
-            suggestionsDiv.style.display = 'none';
-        }
-    });
+    if (!window.__fishDetectDocClickBound) {
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.form-group') && suggestionsDiv) {
+                suggestionsDiv.style.display = 'none';
+            }
+        });
+        window.__fishDetectDocClickBound = true;
+    }
 }
 
 // Select fish from autocomplete

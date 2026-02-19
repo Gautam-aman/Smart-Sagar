@@ -453,6 +453,104 @@ body {
     font-size: 14px;
 }
 
+.ops-panel-card {
+    grid-column: 1 / -1;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.ops-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ops-field label {
+    display: block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.78);
+    margin-bottom: 6px;
+}
+
+.ops-field select,
+.ops-field input[type="number"] {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.25);
+    color: #ffffff;
+    padding: 9px 10px;
+}
+
+.ops-field select option {
+    color: #0f172a;
+}
+
+.ops-field.ops-check {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ops-field.ops-check input {
+    width: 20px;
+    height: 20px;
+}
+
+.ops-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.tracker-item {
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.tracker-item span {
+    display: block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.72);
+    margin-bottom: 6px;
+}
+
+.tracker-item strong {
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.checklist {
+    display: grid;
+    gap: 8px;
+}
+
+.checklist label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+}
+
+.active-alert {
+    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.55);
+    animation: emergencyGlow 1.8s ease-in-out infinite;
+}
+
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
@@ -650,9 +748,34 @@ body::before {
     50% { background-position: 100% 50%; }
 }
 
+@keyframes emergencyGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.5); }
+    50% { box-shadow: 0 0 0 12px rgba(255, 68, 68, 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
     * {
         animation: none !important;
         transition: none !important;
+    }
+}
+
+@media (max-width: 980px) {
+    .sos-container {
+        grid-template-columns: 1fr;
+        max-width: 96%;
+    }
+
+    .ops-grid,
+    .tracker-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .ops-grid,
+    .tracker-grid,
+    .ops-actions {
+        grid-template-columns: 1fr;
     }
 }
