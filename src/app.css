@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: #162343;
+}
+
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.legacy-error {
+  color: #fff;
+  background: #b00020;
+  margin: 24px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: sans-serif;
+}
