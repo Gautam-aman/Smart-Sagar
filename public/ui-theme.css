@@ -474,6 +474,138 @@ header,
   }
 }
 
+.welcome-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-bubbles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.welcome-bubbles .bubble {
+  position: absolute;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.06));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: bubbleFloat 7s ease-in-out infinite;
+}
+
+.welcome-bubbles .b1 {
+  width: 92px;
+  height: 92px;
+  right: 8%;
+  top: 12%;
+}
+
+.welcome-bubbles .b2 {
+  width: 52px;
+  height: 52px;
+  right: 24%;
+  top: 55%;
+  animation-delay: 0.9s;
+}
+
+.welcome-bubbles .b3 {
+  width: 34px;
+  height: 34px;
+  right: 16%;
+  top: 38%;
+  animation-delay: 1.8s;
+}
+
+.welcome-info-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.welcome-chip {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.24);
+  background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06));
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+.chip-label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+}
+
+.chip-value {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.88rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.weather-today-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weather-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weather-tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.4), rgba(25,227,177,0.38));
+  border: 1px solid rgba(255,255,255,0.26);
+  color: #f3fdff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.weather-hero {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: linear-gradient(140deg, rgba(255,255,255,0.2), rgba(255,255,255,0.07));
+  margin-bottom: 2px;
+}
+
+.weather-main-temp {
+  font-size: 1.9rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: #fff;
+}
+
+.weather-main-condition {
+  margin-top: 4px;
+  color: rgba(255,255,255,0.82);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 900px) {
+  .welcome-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.06);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

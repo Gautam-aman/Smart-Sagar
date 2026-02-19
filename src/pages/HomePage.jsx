@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { usePageAssets } from '../utils/pageAssets';
 
@@ -12,8 +12,41 @@ const HOME_SCRIPTS = [
   'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit',
 ];
 
+function weatherCodeLabel(code) {
+  const map = {
+    0: 'Clear Sky',
+    1: 'Mainly Clear',
+    2: 'Partly Cloudy',
+    3: 'Overcast',
+    45: 'Fog',
+    48: 'Depositing Rime Fog',
+    51: 'Light Drizzle',
+    53: 'Drizzle',
+    55: 'Dense Drizzle',
+    61: 'Light Rain',
+    63: 'Rain',
+    65: 'Heavy Rain',
+    71: 'Light Snow',
+    73: 'Snow',
+    75: 'Heavy Snow',
+    80: 'Rain Showers',
+    81: 'Showers',
+    82: 'Heavy Showers',
+    95: 'Thunderstorm',
+  };
+  return map[code] || 'Weather Update';
+}
+
 export default function HomePage() {
   usePageAssets({ styles: HOME_STYLES, scripts: HOME_SCRIPTS, fireReadyEvents: true });
+  const [weather, setWeather] = useState({
+    loading: true,
+    city: 'Locating...',
+    condition: 'Fetching weather...',
+    temp: '--',
+    humidity: '--',
+    wind: '--',
+  });
 
   useEffect(() => {
     if (window.chatbase && window.chatbase('getState') === 'initialized') {
@@ -36,6 +69,71 @@ export default function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    const setFallback = (condition = 'Weather unavailable') => {
+      if (!active) return;
+      setWeather({
+        loading: false,
+        city: 'Current Region',
+        condition,
+        temp: '--',
+        humidity: '--',
+        wind: '--',
+      });
+    };
+
+    const fetchWeather = async (lat, lng) => {
+      try {
+        const weatherRes = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`
+        );
+        const weatherJson = await weatherRes.json();
+        const current = weatherJson?.current;
+        if (!current) throw new Error('No weather data');
+
+        if (!active) return;
+        setWeather({
+          loading: false,
+          city: `${Math.abs(lat).toFixed(2)}${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(2)}${lng >= 0 ? 'E' : 'W'}`,
+          condition: weatherCodeLabel(current.weather_code),
+          temp: `${Math.round(current.temperature_2m)}°C`,
+          humidity: `${Math.round(current.relative_humidity_2m)}%`,
+          wind: `${Math.round(current.wind_speed_10m)} km/h`,
+        });
+      } catch {
+        setFallback();
+      }
+    };
+
+    if (!navigator.geolocation) {
+      fetchWeather(19.07, 72.87);
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          fetchWeather(position.coords.latitude, position.coords.longitude);
+        },
+        () => fetchWeather(19.07, 72.87),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+      );
+    }
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const todayLabel = useMemo(
+    () =>
+      new Date().toLocaleDateString('en-IN', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'short',
+      }),
+    []
+  );
+
   return (
     <div className="dashboard-container">
       <div id="google_translate_element" />
@@ -56,10 +154,33 @@ export default function HomePage() {
 
       <div className="main-grid">
         <div className="welcome-card">
+          <div className="welcome-bubbles">
+            <span className="bubble b1" />
+            <span className="bubble b2" />
+            <span className="bubble b3" />
+          </div>
           <div className="welcome-content">
             <p className="welcome-text">Welcome back to,</p>
             <h1 className="user-name">Sagar Saathi</h1>
             <p className="subtitle">Glad to see you again!</p>
+            <div className="welcome-info-grid">
+              <div className="welcome-chip">
+                <span className="chip-label">Today</span>
+                <span className="chip-value">{todayLabel}</span>
+              </div>
+              <div className="welcome-chip">
+                <span className="chip-label">Safety Pulse</span>
+                <span className="chip-value">Moderate</span>
+              </div>
+              <div className="welcome-chip">
+                <span className="chip-label">Best Fishing Window</span>
+                <span className="chip-value">05:30 AM - 09:30 AM</span>
+              </div>
+              <div className="welcome-chip">
+                <span className="chip-label">Dock Activity</span>
+                <span className="chip-value">High</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -116,6 +237,40 @@ export default function HomePage() {
           </div>
           <div className="chart-container">
             <canvas id="populationChart" />
+          </div>
+        </div>
+
+        <div className="weather-card weather-today-card">
+          <div className="weather-header-row">
+            <h3 className="weather-title">Today's Weather</h3>
+            <span className="weather-tag">{weather.loading ? 'Updating...' : 'Live'}</span>
+          </div>
+          <p className="weather-subtitle">{weather.city}</p>
+          <div className="weather-hero">
+            <div className="weather-main-temp">{weather.temp}</div>
+            <div className="weather-main-condition">{weather.condition}</div>
+          </div>
+          <div className="weather-grid">
+            <div className="weather-item">
+              <div className="weather-icon sunny" />
+              <span className="weather-desc">Humidity</span>
+              <span className="weather-temp">{weather.humidity}</span>
+            </div>
+            <div className="weather-item">
+              <div className="weather-icon cloudy" />
+              <span className="weather-desc">Wind</span>
+              <span className="weather-temp">{weather.wind}</span>
+            </div>
+            <div className="weather-item">
+              <div className="weather-icon sunny" />
+              <span className="weather-desc">Water Alert</span>
+              <span className="weather-temp">Stable</span>
+            </div>
+            <div className="weather-item">
+              <div className="weather-icon cloudy" />
+              <span className="weather-desc">Wave Risk</span>
+              <span className="weather-temp">Low</span>
+            </div>
           </div>
         </div>
       </div>
