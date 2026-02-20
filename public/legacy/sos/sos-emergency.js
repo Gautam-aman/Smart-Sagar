@@ -36,6 +36,8 @@ let emergencyProfile = {
     medicalAidRequired: false
 };
 
+const OFFLINE_CHECKLIST_KEY = 'sos_offline_checklist';
+
 // Initialize the SOS page
 document.addEventListener('DOMContentLoaded', function() {
     initializeSOS();
@@ -47,6 +49,7 @@ function initializeSOS() {
     setupAutoRefresh();
     syncProfileToUI();
     updateReadinessChecklist();
+    restoreOfflineChecklist();
 }
 
 function setupAutoRefresh() {
@@ -461,6 +464,30 @@ function updateReadinessChecklist() {
     const done = checks.filter((c) => c.checked).length;
     const score = Math.round((done / checks.length) * 100);
     scoreEl.textContent = `Readiness ${score}%`;
+
+    const state = checks.map((c) => c.checked);
+    try {
+        localStorage.setItem(OFFLINE_CHECKLIST_KEY, JSON.stringify(state));
+    } catch {
+        // Ignore storage failures.
+    }
+}
+
+function restoreOfflineChecklist() {
+    try {
+        const raw = localStorage.getItem(OFFLINE_CHECKLIST_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        const checks = Array.from(document.querySelectorAll('.checklist-item'));
+        checks.forEach((c, idx) => {
+            if (typeof state[idx] === 'boolean') {
+                c.checked = state[idx];
+            }
+        });
+        updateReadinessChecklist();
+    } catch {
+        // Ignore storage failures.
+    }
 }
 
 function buildEmergencyBrief() {

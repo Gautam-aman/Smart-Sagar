@@ -278,6 +278,41 @@
             padding: 7px 11px;
         }
 
+        .compliance-panel {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .compliance-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #cbd5f5;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .compliance-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: #e2e8f0;
+        }
+
+        .compliance-list li::before {
+            content: '✓';
+            display: inline-block;
+            margin-right: 8px;
+            color: #7dd3fc;
+            font-weight: 700;
+        }
+
         #map {
             height: calc(100vh - 70px);
             width: 100%;
@@ -894,6 +929,12 @@
         </div>
         <div class="decision-rec" id="decisionRecommendation">Use Analyze Zone, Search, or Nearest Zone to generate a recommendation.</div>
         <div class="decision-reasons" id="decisionReasons">Signals will appear here after analysis.</div>
+        <div class="compliance-panel">
+            <div class="compliance-title">Zone Compliance Checklist</div>
+            <ul id="complianceList" class="compliance-list">
+                <li>Analyze a zone to load checklist</li>
+            </ul>
+        </div>
         <div class="decision-actions">
             <button class="btn" onclick="focusNearestZone()"><i class="fas fa-location-crosshairs"></i> Analyze Nearest</button>
             <button class="btn" onclick="exportZoneBrief()"><i class="fas fa-file-export"></i> Export Brief</button>
@@ -1699,7 +1740,8 @@
             const reasonsEl = document.getElementById('decisionReasons');
             const meterBar = document.getElementById('riskMeterBar');
             const bestEl = document.getElementById('bestWindow');
-            if (!zoneEl || !scoreEl || !levelEl || !recEl || !reasonsEl || !meterBar || !bestEl) return;
+            const complianceList = document.getElementById('complianceList');
+            if (!zoneEl || !scoreEl || !levelEl || !recEl || !reasonsEl || !meterBar || !bestEl || !complianceList) return;
 
             if (!feature) {
                 zoneEl.textContent = 'No zone selected';
@@ -1709,6 +1751,7 @@
                 recEl.textContent = 'Use Analyze Zone, Search, or Nearest Zone to generate a recommendation.';
                 reasonsEl.textContent = 'Signals will appear here after analysis.';
                 meterBar.style.width = '0%';
+                complianceList.innerHTML = '<li>Analyze a zone to load checklist</li>';
                 latestDecision = null;
                 return;
             }
@@ -1726,6 +1769,32 @@
             recEl.textContent = result.recommendation;
             reasonsEl.textContent = result.reasons.slice(0, 4).join(' ');
             meterBar.style.width = `${result.score}%`;
+
+            const status = feature.properties?.status || 'safe';
+            let checklist = [];
+            if (status === 'danger') {
+                checklist = [
+                    'No fishing allowed (danger zone)',
+                    'Maintain safety buffer and avoid anchoring',
+                    'Transit only with monitoring',
+                    'Report zone breach if observed'
+                ];
+            } else if (status === 'restricted') {
+                checklist = [
+                    'Carry special permit / authorization',
+                    'Use approved net size and gear',
+                    'Respect time-window restrictions',
+                    'Log catch and bycatch properly'
+                ];
+            } else {
+                checklist = [
+                    'Valid fishing permit onboard',
+                    'Standard safety gear checked',
+                    'Report catch log after trip',
+                    'Avoid protected sub‑areas'
+                ];
+            }
+            complianceList.innerHTML = checklist.map((item) => `<li>${item}</li>`).join('');
         }
 
         function findZoneByName(zoneName) {
