@@ -788,8 +788,11 @@ header,
 .main-grid {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: auto !important;
+  grid-auto-rows: max-content;
   height: auto !important;
   align-items: start;
+  align-content: start;
   gap: 8px !important;
   padding: 0 !important;
   margin-bottom: 0 !important;
