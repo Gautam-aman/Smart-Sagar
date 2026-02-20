@@ -953,6 +953,54 @@ button,
   filter: saturate(0.85) brightness(0.92);
 }
 
+/* Fish Detect text contrast fix on light cards */
+.insight-card {
+  background: #f1f5fb !important;
+  border-color: rgba(30, 60, 114, 0.12) !important;
+}
+
+.insight-card span {
+  color: #64748b !important;
+}
+
+.insight-card strong {
+  color: #1e3c72 !important;
+}
+
+.prediction-history .history-empty {
+  color: #6b7280 !important;
+}
+
+.prediction-history .history-item {
+  background: #f8fafc !important;
+  border-color: rgba(30, 60, 114, 0.12) !important;
+}
+
+.prediction-history .history-title {
+  color: #1e3c72 !important;
+}
+
+.prediction-history .history-title span {
+  color: #6b7280 !important;
+}
+
+.prediction-history .history-meta span {
+  background: #eef2ff !important;
+  color: #334155 !important;
+}
+
+.prediction-history .history-trend.safe {
+  color: #0f8a44 !important;
+}
+
+.prediction-history .history-trend.caution {
+  color: #a16207 !important;
+}
+
+.prediction-history .history-trend.danger {
+  color: #b91c1c !important;
+}
+
 @keyframes bubbleFloat {
   0%, 100% {
     transform: translateY(0px) scale(1);
