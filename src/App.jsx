@@ -19,6 +19,7 @@ export default function App() {
   return (
     <div className="app-root">
       <div className="water-bg" aria-hidden="true" />
+      <div className="fish-gif-bg" aria-hidden="true" />
       <Fish3DOverlay />
       <GlobalNavbar />
       <div className="route-layer">
