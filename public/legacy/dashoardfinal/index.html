@@ -394,9 +394,10 @@
 
         .popup-family-image {
             width: 100%;
-            max-width: 250px;
-            height: 120px;
-            object-fit: cover;
+            max-width: 320px;
+            height: auto;
+            max-height: 180px;
+            object-fit: contain;
             border-radius: 8px;
             margin: 10px 0;
             border: 2px solid #e9ecef;
@@ -514,9 +515,10 @@
         /* Add to your existing <style> section */
 .popup-family-image {
     width: 100%;
-    max-width: 200px;
-    height: 120px;
-    object-fit: cover;
+    max-width: 320px;
+    height: auto;
+    max-height: 180px;
+    object-fit: contain;
     border-radius: 8px;
     margin: 10px 0;
     border: 2px solid #e9ecef;
@@ -1037,7 +1039,10 @@ const FAMILY_IMAGES = {
 };
 
 // Default image for unknown families
-const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.svg';
+const DEFAULT_FAMILY_IMAGE = '/legacy/dashoardfinal/images/families/default-fish.png';
+
+const SINGLE_FISH_IMAGE = '/legacy/dashoardfinal/images/families/default-fish.png';
+const SINGLE_FISH_IMAGE_FALLBACK = '/legacy/dashoardfinal/images/families/default-fish.png';
 
 
         // OBIS Dataset definitions
@@ -1662,7 +1667,10 @@ const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.svg';
         }
 
         // Get family image URL
-        function getFamilyImage(familyName) {
+        function getFamilyImage(familyName, recordType = 'fish') {
+            if (recordType !== 'fish') {
+                return DEFAULT_FAMILY_IMAGE;
+            }
             if (!familyName || familyName === 'Unknown') {
                 return DEFAULT_FAMILY_IMAGE;
             }
@@ -1674,27 +1682,10 @@ const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.svg';
                 Lutjanidae: 'images/families/lutjanidae.jpg',
                 Serranidae: 'images/families/serranidae.jpg',
                 Clupeidae: 'images/families/clupeidae.jpg',
-                Engraulidae: 'images/families/engraulidae.jpg',
-                Acroporidae: 'images/families/acroporidae.jpg'
+                Engraulidae: 'images/families/engraulidae.jpg'
             };
 
             return familyImageMap[normalizedFamily] || DEFAULT_FAMILY_IMAGE;
-        }
-
-        function getRecordImageUrl(record, familyName = '') {
-            const token = `${record.scientificName || ''}-${record.id || ''}-${record.latitude || ''}-${record.longitude || ''}-${familyName}`;
-            const seed = hashString(token || 'marine-image');
-            const familyTags = {
-                Scombridae: 'tuna,fish',
-                Carangidae: 'trevally,fish',
-                Lutjanidae: 'snapper,fish',
-                Serranidae: 'grouper,fish',
-                Clupeidae: 'herring,fish',
-                Engraulidae: 'anchovy,fish',
-                Acroporidae: 'coral,reef'
-            };
-            const tags = familyTags[familyName] || 'fish,marine';
-            return `https://loremflickr.com/640/360/${tags}?lock=${10000 + seed}`;
         }
 
         // Check if image exists (optional - for better error handling)
@@ -1714,6 +1705,10 @@ const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.svg';
                 hash |= 0;
             }
             return Math.abs(hash);
+        }
+
+        function getRecordImageUrl() {
+            return SINGLE_FISH_IMAGE;
         }
 
         function buildDisplayRecord(record) {
@@ -1776,8 +1771,8 @@ const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.svg';
         // Create popup content for markers
         function createPopupContent(record) {
             const display = buildDisplayRecord(record);
-            const familyImageUrl = getFamilyImage(display.family);
-            const recordImageUrl = getRecordImageUrl(record, display.family);
+            const safeFamilyImageUrl = FAMILY_IMAGES[display.family] || getFamilyImage(display.family, record.type);
+            const recordImageUrl = getRecordImageUrl(record, display.family) || safeFamilyImageUrl || DEFAULT_FAMILY_IMAGE;
 
             return `
                 <div class="popup-content">
@@ -1787,13 +1782,13 @@ const DEFAULT_FAMILY_IMAGE = 'images/families/default-fish.svg';
                         <img src="${recordImageUrl}" 
                              alt="${display.family} family representative" 
                              class="popup-family-image"
-                             onerror="this.src='${familyImageUrl}'; this.onerror=null;"
+                             onerror="this.src='${SINGLE_FISH_IMAGE_FALLBACK}'; this.onerror=null;"
                              loading="lazy">
                         <div class="popup-image-caption">
                             Family: ${display.family}
                         </div>
                         <div class="popup-image-attribution">
-                            Image: Downloaded fish photo (local asset)
+                            Image: Fish reference photo
                         </div>
                     </div>
 
