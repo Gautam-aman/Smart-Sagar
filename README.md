@@ -1,6 +1,6 @@
 # Smart Sagar
 
-Live link : https://aqua-tech-six.vercel.app/
+Live link : [Live Demo](https://aqua-tech-six.vercel.app/)
 
 Smart Sagar is a React + Vite marine operations dashboard that combines modern React pages with legacy HTML tools for fishing intelligence, weather, safety, and biodiversity exploration.
 

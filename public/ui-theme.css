@@ -1,15 +1,15 @@
 :root {
-  --ui-bg-1: #050505;
-  --ui-bg-2: #0b0b0b;
-  --ui-bg-3: #151515;
-  --ui-glass: rgba(255, 255, 255, 0.11);
-  --ui-glass-strong: rgba(255, 255, 255, 0.18);
-  --ui-border: rgba(255, 255, 255, 0.2);
-  --ui-text: #f5f5f5;
-  --ui-muted: rgba(245, 245, 245, 0.72);
-  --ui-accent: #d0d0d0;
-  --ui-accent-2: #8f8f8f;
-  --ui-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
+  --ui-bg-1: #0a2740;
+  --ui-bg-2: #0c3a5a;
+  --ui-bg-3: #0f5473;
+  --ui-glass: rgba(255, 255, 255, 0.72);
+  --ui-glass-strong: rgba(255, 255, 255, 0.9);
+  --ui-border: rgba(148, 210, 255, 0.2);
+  --ui-text: #f8fbff;
+  --ui-muted: rgba(224, 240, 255, 0.78);
+  --ui-accent: #22d3ee;
+  --ui-accent-2: #60a5fa;
+  --ui-shadow: 0 18px 42px rgba(15, 23, 42, 0.18);
 }
 
 html,
@@ -20,8 +20,8 @@ body {
 body {
   color: var(--ui-text);
   background:
-    radial-gradient(1100px circle at 6% 8%, rgba(255, 255, 255, 0.09), transparent 38%),
-    radial-gradient(900px circle at 94% 10%, rgba(170, 170, 170, 0.08), transparent 35%),
+    radial-gradient(1100px circle at 6% 8%, rgba(34, 211, 238, 0.18), transparent 38%),
+    radial-gradient(900px circle at 94% 10%, rgba(96, 165, 250, 0.2), transparent 35%),
     linear-gradient(135deg, var(--ui-bg-1), var(--ui-bg-2) 45%, var(--ui-bg-3));
   background-size: 180% 180%;
   animation: uiGradientMove 18s ease-in-out infinite;
@@ -33,8 +33,8 @@ body::after {
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(148, 210, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 210, 255, 0.16) 1px, transparent 1px);
   background-size: 34px 34px;
   mask-image: radial-gradient(circle at 50% 40%, black 35%, transparent 85%);
 }
@@ -67,9 +67,9 @@ header,
 .card,
 .panel,
 .widget {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
-  border: 1px solid var(--ui-border);
-  box-shadow: var(--ui-shadow);
+  background: linear-gradient(145deg, rgba(10, 30, 52, 0.92), rgba(7, 22, 40, 0.96));
+  border: 1px solid rgba(148, 210, 255, 0.22);
+  box-shadow: 0 18px 42px rgba(4, 15, 28, 0.48);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
@@ -191,9 +191,9 @@ label,
 input,
 select,
 textarea {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
 }
 
 input:focus,
@@ -201,7 +201,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--ui-accent);
-  box-shadow: 0 0 0 3px rgba(208, 208, 208, 0.2);
+  box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.16);
 }
 
 #map,
@@ -211,7 +211,7 @@ textarea:focus {
 .chart-container,
 canvas {
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(15, 23, 42, 0.12);
 }
 
 .sos-badge,
@@ -471,10 +471,10 @@ header,
   justify-content: center;
   margin: 0 0 14px;
   padding: 8px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(148, 210, 255, 0.24);
   border-radius: 14px;
-  background: linear-gradient(140deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08));
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  background: linear-gradient(140deg, rgba(12, 36, 62, 0.92), rgba(9, 28, 50, 0.95));
+  box-shadow: 0 10px 24px rgba(4, 15, 28, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -488,15 +488,15 @@ header,
 #google_translate_element .goog-te-gadget .goog-te-combo {
   appearance: none;
   -webkit-appearance: none;
-  border: 1px solid rgba(255,255,255,0.34);
+  border: 1px solid rgba(148, 210, 255, 0.28);
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08));
-  color: #f8fdff;
+  background: linear-gradient(135deg, rgba(13, 43, 74, 0.92), rgba(9, 30, 52, 0.95));
+  color: #f8fbff;
   padding: 9px 36px 9px 12px;
   font-size: 0.92rem;
   font-weight: 600;
   outline: none;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(4, 15, 28, 0.45);
   cursor: pointer;
 }
 
@@ -538,7 +538,7 @@ header,
 .welcome-bubbles .bubble {
   position: absolute;
   border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.06));
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(245, 158, 11, 0.1));
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   animation: bubbleFloat 7s ease-in-out infinite;
@@ -577,9 +577,9 @@ header,
 .welcome-chip {
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.24);
-  background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06));
-  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+  border: 1px solid rgba(148, 210, 255, 0.22);
+  background: linear-gradient(145deg, rgba(16, 46, 78, 0.85), rgba(12, 34, 59, 0.9));
+  box-shadow: 0 8px 18px rgba(4, 15, 28, 0.45);
 }
 
 .chip-label {
@@ -587,14 +587,14 @@ header,
   font-size: 0.72rem;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.75);
+  color: rgba(224, 240, 255, 0.78);
 }
 
 .chip-value {
   display: block;
   margin-top: 4px;
   font-size: 0.88rem;
-  color: #fff;
+  color: #f8fbff;
   font-weight: 600;
 }
 
@@ -613,9 +613,9 @@ header,
 .weather-tag {
   padding: 4px 10px;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(212,212,212,0.35), rgba(145,145,145,0.32));
-  border: 1px solid rgba(255,255,255,0.26);
-  color: #f3fdff;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(96, 165, 250, 0.2));
+  border: 1px solid rgba(148, 210, 255, 0.28);
+  color: #f8fbff;
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -623,21 +623,33 @@ header,
 .weather-hero {
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: linear-gradient(140deg, rgba(255,255,255,0.2), rgba(255,255,255,0.07));
+  border: 1px solid rgba(148, 210, 255, 0.22);
+  background: linear-gradient(140deg, rgba(12, 34, 59, 0.9), rgba(10, 30, 52, 0.95));
   margin-bottom: 2px;
+}
+
+.weather-title {
+  color: #0f172a;
+}
+
+.weather-temp {
+  color: #0f172a;
+}
+
+.weather-desc {
+  color: #475569;
 }
 
 .weather-main-temp {
   font-size: 1.9rem;
   line-height: 1.1;
   font-weight: 700;
-  color: #fff;
+  color: #f8fbff;
 }
 
 .weather-main-condition {
   margin-top: 4px;
-  color: rgba(255,255,255,0.82);
+  color: rgba(224, 240, 255, 0.82);
   font-size: 0.92rem;
 }
 
@@ -648,10 +660,10 @@ header,
   gap: 12px;
   margin-bottom: 14px;
   padding: 14px 16px;
-  border: 1px solid rgba(255,255,255,0.24);
+  border: 1px solid rgba(148, 210, 255, 0.22);
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(15,15,15,0.86), rgba(42,42,42,0.72));
-  box-shadow: 0 14px 30px rgba(0,0,0,0.26);
+  background: linear-gradient(135deg, rgba(11, 32, 54, 0.92), rgba(8, 24, 44, 0.95));
+  box-shadow: 0 14px 30px rgba(4, 15, 28, 0.45);
 }
 
 .brand-area {
@@ -667,9 +679,9 @@ header,
   display: grid;
   place-items: center;
   font-weight: 800;
-  color: #fff;
-  background: linear-gradient(145deg, #3e3e3e, #8b8b8b);
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.26);
+  color: #0a2740;
+  background: linear-gradient(145deg, #7dd3fc, #22d3ee);
+  box-shadow: 0 10px 18px rgba(4, 15, 28, 0.35);
 }
 
 .brand-meta h2 {
@@ -680,7 +692,7 @@ header,
 .brand-meta p {
   margin: 3px 0 0;
   font-size: 0.82rem;
-  color: rgba(255,255,255,0.78);
+  color: rgba(224, 240, 255, 0.75);
 }
 
 .nav-utility {
@@ -697,9 +709,9 @@ header,
   gap: 8px;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.22);
-  background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.07));
-  color: #f4fdff;
+  border: 1px solid rgba(148, 210, 255, 0.22);
+  background: linear-gradient(145deg, rgba(12, 38, 66, 0.9), rgba(9, 28, 49, 0.95));
+  color: #f8fbff;
   font-size: 0.76rem;
   font-weight: 600;
 }
@@ -823,17 +835,25 @@ header,
 }
 
 .copilot-line {
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(148, 210, 255, 0.22);
   border-radius: 12px;
-  background: linear-gradient(145deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+  background: linear-gradient(145deg, rgba(12, 38, 66, 0.92), rgba(9, 28, 49, 0.95));
   padding: 10px 12px;
 }
 
 .copilot-line p {
   margin: 4px 0 0;
-  color: #f0fcff;
+  color: #f8fbff;
   font-size: 0.9rem;
   line-height: 1.45;
+}
+
+.copilot-line .chip-label {
+  color: rgba(224, 240, 255, 0.78);
+}
+
+.ai-assistant-card .weather-subtitle {
+  color: rgba(224, 240, 255, 0.78);
 }
 
 @media (max-width: 1200px) {
@@ -846,19 +866,19 @@ header,
   }
 }
 
-/* Global Black Theme Override (All Pages) */
+/* Global Aquatic Theme Override (All Pages) */
 html,
 body,
 #root {
-  background: #050505 !important;
-  color: #f5f5f5 !important;
+  background: #0a2740 !important;
+  color: #f8fbff !important;
 }
 
 body {
   background-image:
-    radial-gradient(1200px circle at 8% 6%, rgba(255, 255, 255, 0.08), transparent 38%),
-    radial-gradient(900px circle at 92% 8%, rgba(170, 170, 170, 0.07), transparent 35%),
-    linear-gradient(140deg, #050505, #0b0b0b 45%, #161616) !important;
+    radial-gradient(1200px circle at 8% 6%, rgba(34, 211, 238, 0.2), transparent 38%),
+    radial-gradient(900px circle at 92% 8%, rgba(96, 165, 250, 0.2), transparent 35%),
+    linear-gradient(140deg, #0a2740, #0c3a5a 45%, #0f5473) !important;
 }
 
 header,
@@ -882,9 +902,9 @@ header,
 .info-panel,
 .popup-content,
 .leaflet-popup-content-wrapper {
-  background: linear-gradient(145deg, rgba(34, 34, 34, 0.95), rgba(12, 12, 12, 0.92)) !important;
-  color: #f2f2f2 !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: linear-gradient(145deg, rgba(10, 30, 52, 0.92), rgba(7, 22, 40, 0.96)) !important;
+  color: #f8fbff !important;
+  border-color: rgba(148, 210, 255, 0.22) !important;
 }
 
 .container,
@@ -895,6 +915,59 @@ header,
 .dashboard-grid,
 .main-grid {
   background: transparent !important;
+}
+
+.global-nav {
+  background: linear-gradient(135deg, rgba(8, 22, 40, 0.96), rgba(9, 28, 49, 0.92)) !important;
+  border-bottom-color: rgba(148, 210, 255, 0.22) !important;
+}
+
+.global-brand,
+.global-nav-link {
+  color: rgba(235, 247, 255, 0.92) !important;
+}
+
+.global-nav-link:hover {
+  color: #ffffff !important;
+  border-color: rgba(148, 210, 255, 0.45) !important;
+  background: rgba(34, 211, 238, 0.16) !important;
+}
+
+.global-nav-link.active {
+  color: #ffffff !important;
+  border-color: rgba(96, 165, 250, 0.7) !important;
+  background: rgba(96, 165, 250, 0.28) !important;
+}
+
+/* Main dashboard visibility fixes (dark blue theme) */
+.market-item {
+  background: linear-gradient(145deg, rgba(12, 38, 66, 0.92), rgba(9, 28, 49, 0.95)) !important;
+  border: 1px solid rgba(148, 210, 255, 0.18);
+  color: #f8fbff !important;
+}
+
+.fish-label,
+.population-subtitle,
+.weather-subtitle,
+.subtitle {
+  color: rgba(224, 240, 255, 0.8) !important;
+}
+
+.fish-value,
+.card-title,
+.weather-title,
+.welcome-text,
+.user-name,
+.population-header h3,
+.population-header h2 {
+  color: #f8fbff !important;
+}
+
+.ai-assistant-card,
+.welcome-card,
+.market-card,
+.population-card {
+  color: #f8fbff !important;
 }
 
 p,
@@ -908,7 +981,7 @@ th,
 .status-label,
 .popup-image-caption,
 .popup-image-attribution {
-  color: rgba(245, 245, 245, 0.82) !important;
+  color: rgba(224, 240, 255, 0.82) !important;
 }
 
 h1,
@@ -921,21 +994,21 @@ h6,
 .user-name,
 .detail-label,
 strong {
-  color: #f8f8f8 !important;
+  color: #f8fbff !important;
 }
 
 input,
 select,
 textarea,
 .zone-search {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.28) !important;
+  background: rgba(9, 28, 49, 0.94) !important;
+  color: #f8fbff !important;
+  border-color: rgba(148, 210, 255, 0.28) !important;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: rgba(255, 255, 255, 0.62) !important;
+  color: rgba(224, 240, 255, 0.6) !important;
 }
 
 button,
@@ -944,9 +1017,9 @@ button,
 .control-button,
 .nav-btn,
 .nav-btn-sos {
-  background: linear-gradient(135deg, #2b2b2b, #4f4f4f) !important;
-  color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: linear-gradient(135deg, #22d3ee, #3b82f6) !important;
+  color: #ffffff !important;
+  border-color: rgba(148, 210, 255, 0.3) !important;
 }
 
 .safe-color,
