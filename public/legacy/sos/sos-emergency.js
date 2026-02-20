@@ -264,16 +264,17 @@ function navigateToStation() {
         Opening Maps...
     `;
 
-    setTimeout(() => {
-        openGoogleMapsNavigation(nearestStation);
-        button.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M3 7v6l7-3 7 3V7l-7-3-7 3z" fill="currentColor"/>
-                <path d="M10 14v6" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Navigate to Station
-        `;
-    }, 1500);
+    const opened = openGoogleMapsNavigation(nearestStation);
+    button.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 7v6l7-3 7 3V7l-7-3-7 3z" fill="currentColor"/>
+            <path d="M10 14v6" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        Navigate to Station
+    `;
+    if (opened === false) {
+        alert('Popup blocked. Please allow popups for this site.');
+    }
 }
 
 // Navigate to specific station
@@ -304,23 +305,20 @@ function openGoogleMapsNavigation(station) {
         // Android - try Google Maps app
         const androidUrl = `google.navigation:q=${stationLat},${stationLng}`;
         window.location.href = androidUrl;
-
-        // Fallback to web after 2 seconds
-        setTimeout(() => {
-            window.open(mapsUrl, '_blank');
-        }, 2000);
+        return true;
     } else if (isIOS) {
         // iOS - try Apple Maps, then Google Maps
         const appleUrl = `maps://maps.apple.com/?saddr=${userLat},${userLng}&daddr=${stationLat},${stationLng}&dirflg=d`;
         window.location.href = appleUrl;
-
-        // Fallback to Google Maps web
-        setTimeout(() => {
-            window.open(mapsUrl, '_blank');
-        }, 2000);
+        return true;
     } else {
         // Desktop or other - open Google Maps web
-        window.open(mapsUrl, '_blank');
+        const popup = window.open(mapsUrl, '_blank', 'noopener');
+        if (!popup) {
+            window.location.href = mapsUrl;
+            return false;
+        }
+        return true;
     }
 
     // Show confirmation
@@ -568,6 +566,9 @@ window.startDistressProtocol = startDistressProtocol;
 window.markCrewSafe = markCrewSafe;
 window.updateReadinessChecklist = updateReadinessChecklist;
 window.exportEmergencyBrief = exportEmergencyBrief;
+window.navigateToStation = navigateToStation;
+window.refreshLocation = refreshLocation;
+window.shareLocation = shareLocation;
 
 function googleTranslateElementInit() {
             new google.translate.TranslateElement(
