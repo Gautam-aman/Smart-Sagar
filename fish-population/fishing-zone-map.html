@@ -15,8 +15,9 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .header {
@@ -273,8 +274,11 @@
         }
 
         #map {
-            height: calc(100vh - 70px);
-            width: 100%;
+            height: calc(100vh - 140px);
+            width: calc(100% - 36px);
+            margin: 12px 18px 18px;
+            border-radius: 14px;
+            overflow: hidden;
         }
 
         .legend {
@@ -488,7 +492,9 @@
             }
 
             #map {
-                height: calc(100vh - 120px);
+                height: calc(100vh - 170px);
+                width: calc(100% - 20px);
+                margin: 10px;
             }
         }
     
@@ -614,6 +620,27 @@
             color: #f1f1f1 !important;
         }
 
+        /* Popup contrast fix for zone details (species/scientific name visibility) */
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip,
+        .leaflet-popup-content {
+            background: #f8fbff !important;
+            color: #10243a !important;
+        }
+
+        .popup-content p,
+        .popup-content h3 {
+            color: #17324d !important;
+            text-shadow: none !important;
+        }
+
+        .fish-details,
+        .fish-details .detail-label,
+        .fish-details .detail-row span,
+        .fish-details em {
+            color: #17324d !important;
+        }
+
         .popup-content,
         .fish-card,
         .station-card,
@@ -705,6 +732,8 @@
 
             #map {
                 height: 58vh !important;
+                width: calc(100% - 20px) !important;
+                margin: 10px !important;
             }
 
             .legend {
@@ -1211,15 +1240,24 @@
             console.error('Fishing zone map dependencies unavailable');
         }
 
-        // Zone layers
-        var allZones = L.layerGroup();
-        var safeZones = L.layerGroup();
-        var restrictedZones = L.layerGroup();
-        var dangerZones = L.layerGroup();
+        // Zone layers (created lazily to avoid first-load race conditions)
+        var allZones = null;
+        var safeZones = null;
+        var restrictedZones = null;
+        var dangerZones = null;
         var zoneLayerRegistry = new Map();
         var selectedZoneFeature = null;
         var latestForecast = null;
         var latestDecision = null;
+
+        function ensureZoneLayers() {
+            if (!window.L) return false;
+            if (!allZones) allZones = L.layerGroup();
+            if (!safeZones) safeZones = L.layerGroup();
+            if (!restrictedZones) restrictedZones = L.layerGroup();
+            if (!dangerZones) dangerZones = L.layerGroup();
+            return true;
+        }
 
         // Zone styling
         var zoneStyles = {
@@ -1331,6 +1369,10 @@
         function addZonesToMap() {
             if (!map) {
                 setToolStatus('Map failed to initialize');
+                return;
+            }
+            if (!ensureZoneLayers()) {
+                setToolStatus('Map engine is still loading...');
                 return;
             }
             allZones.clearLayers();
@@ -1866,6 +1908,7 @@
 
         // Initialize everything
         var initRetryCount = 0;
+        var pageBootstrapped = false;
 
         function initFishingZonePage() {
             if (!map) {
@@ -1894,16 +1937,43 @@
                 }
                 return;
             }
+            if (!ensureZoneLayers()) {
+                if (initRetryCount < 10) {
+                    initRetryCount += 1;
+                    setToolStatus('Preparing fishing zone data...');
+                    window.setTimeout(initFishingZonePage, 250);
+                } else {
+                    setToolStatus('Map engine unavailable - please reload this page');
+                }
+                return;
+            }
             addZonesToMap();
+
+            // If zones are unexpectedly empty on first run, retry automatically.
+            if (zoneLayerRegistry.size === 0 && fishingZonesData.features.length > 0) {
+                if (initRetryCount < 14) {
+                    initRetryCount += 1;
+                    setToolStatus('Finalizing zone data...');
+                    window.setTimeout(initFishingZonePage, 220);
+                } else {
+                    setToolStatus('Zone data failed to render - please retry');
+                }
+                return;
+            }
+
             renderDecisionPanel(null, null);
             map.invalidateSize();
             window.setTimeout(() => map && map.invalidateSize(), 200);
-            map.on('click', (event) => {
-                const { lat, lng } = event.latlng;
-                fetchSevenDayForecast(lat, lng, 'Selected Map Point');
-            });
-            fetchSevenDayForecast(15.0, 76.0, 'Indian Marine Center');
-            window.__fishZoneRefreshTimer = window.setInterval(refreshLiveMetrics, 60000);
+
+            if (!pageBootstrapped) {
+                pageBootstrapped = true;
+                map.on('click', (event) => {
+                    const { lat, lng } = event.latlng;
+                    fetchSevenDayForecast(lat, lng, 'Selected Map Point');
+                });
+                fetchSevenDayForecast(15.0, 76.0, 'Indian Marine Center');
+                window.__fishZoneRefreshTimer = window.setInterval(refreshLiveMetrics, 60000);
+            }
             
             // Add custom CSS for popup
             if (!document.getElementById('fish-zone-popup-style')) {

@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function normalizePagePath(pathname) {
+function normalizePagePath(pathname, search = '', hash = '') {
   if (!pathname || pathname === '/') {
-    return '/index.html';
+    return `/index.html${search}${hash}`;
   }
 
   if (pathname.endsWith('/')) {
-    return `${pathname}index.html`;
+    return `${pathname}index.html${search}${hash}`;
   }
 
-  return pathname;
+  return `${pathname}${search}${hash}`;
 }
 
 function isExternalUrl(value) {
@@ -83,8 +83,8 @@ export default function LegacyPage() {
   const [error, setError] = useState('');
 
   const pagePath = useMemo(
-    () => normalizePagePath(decodeURIComponent(location.pathname)),
-    [location.pathname]
+    () => normalizePagePath(decodeURIComponent(location.pathname), location.search, location.hash),
+    [location.hash, location.pathname, location.search]
   );
 
   useEffect(() => {
@@ -175,7 +175,7 @@ export default function LegacyPage() {
         .querySelectorAll(`[data-legacy="${marker}"]`)
         .forEach((node) => node.remove());
     };
-  }, [pagePath]);
+  }, [location.key, pagePath]);
 
   const handleClick = (event) => {
     const anchor = event.target.closest('a[href]');

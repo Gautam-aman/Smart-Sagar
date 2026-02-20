@@ -170,10 +170,9 @@ export default function HomePage() {
   };
 
   const handleAssistantPrompt = async (prompt) => {
-    const openAndAskChat = async () => {
+    const askChatWithoutOpening = async () => {
       try {
         if (typeof window.chatbase === 'function') {
-          window.chatbase('open');
           // Best-effort call for embeds that support direct message APIs.
           window.chatbase('sendMessage', prompt);
         }
@@ -185,7 +184,7 @@ export default function HomePage() {
     setCopilotBusy(true);
     setCopilotQuestion(prompt);
     setAssistantNote('Analyzing marine conditions and preparing response...');
-    await openAndAskChat();
+    await askChatWithoutOpening();
 
     setTimeout(() => {
       setCopilotReply(generateCopilotReply(prompt));
