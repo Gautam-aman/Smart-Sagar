@@ -967,6 +967,31 @@ button,
   color: #1e3c72 !important;
 }
 
+/* Ensure dashboard insight chips remain readable on the light insight card */
+.insight-card .welcome-chip {
+  background: #ffffff !important;
+  border-color: rgba(30, 60, 114, 0.18) !important;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+}
+
+.insight-card .chip-label {
+  color: #475569 !important;
+}
+
+.insight-card .chip-value {
+  color: #0f172a !important;
+}
+
+.insight-card .weather-title {
+  color: #0f172a !important;
+}
+
+.insight-card .weather-tag {
+  background: rgba(15, 23, 42, 0.08) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+}
+
 .prediction-history .history-empty {
   color: #6b7280 !important;
 }
