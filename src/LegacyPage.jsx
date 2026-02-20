@@ -107,7 +107,7 @@ export default function LegacyPage() {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
 
-      document.title = doc.title || 'Sagar Saathi';
+      document.title = doc.title || 'Smart Sagar';
       containerRef.current.innerHTML = doc.body ? doc.body.innerHTML : html;
 
       containerRef.current

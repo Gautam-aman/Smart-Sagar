@@ -14,7 +14,7 @@ export default function GlobalNavbar() {
     <nav className="global-nav" aria-label="Primary">
       <div className="global-nav-inner">
         <NavLink to="/" className="global-brand">
-          Sagar Saathi
+          Smart Sagar
         </NavLink>
         <div className="global-nav-links">
           {navItems.map((item) => (

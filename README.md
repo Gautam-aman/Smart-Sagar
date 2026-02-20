@@ -1,6 +1,6 @@
-# Sagar Saathi
+# Smart Sagar
 
-Sagar Saathi is a React + Vite marine operations dashboard that combines modern React pages with legacy HTML tools for fishing intelligence, weather, safety, and biodiversity exploration.
+Smart Sagar is a React + Vite marine operations dashboard that combines modern React pages with legacy HTML tools for fishing intelligence, weather, safety, and biodiversity exploration.
 
 ## Highlights
 

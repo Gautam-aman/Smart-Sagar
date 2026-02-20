@@ -199,7 +199,7 @@ export default function HomePage() {
         <div className="brand-area">
           <div className="brand-mark">SS</div>
           <div className="brand-meta">
-            <h2>Sagar Saathi Control Deck</h2>
+            <h2>Smart Sagar Control Deck</h2>
             <p>Smart marine operations, safety and catch intelligence</p>
           </div>
         </div>
@@ -241,7 +241,7 @@ export default function HomePage() {
             </div>
             <div className="welcome-content">
               <p className="welcome-text">Welcome back to,</p>
-              <h1 className="user-name">Sagar Saathi</h1>
+              <h1 className="user-name">Smart Sagar</h1>
               <p className="subtitle">Glad to see you again!</p>
               <div className="welcome-info-grid">
                 <div className="welcome-chip">

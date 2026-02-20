@@ -408,7 +408,6 @@ canvas {
 .sos-container,
 .main-content,
 .dashboard,
-.main-grid,
 .dashboard-grid {
   gap: clamp(12px, 1.8vw, 22px) !important;
   padding: clamp(12px, 2vw, 26px) !important;
