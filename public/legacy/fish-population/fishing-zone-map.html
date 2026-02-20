@@ -13,6 +13,10 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --zone-overlay-top: 170px;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             height: 100vh;
@@ -171,7 +175,7 @@
         .decision-panel {
             position: absolute;
             right: 20px;
-            top: 320px;
+            top: calc(var(--zone-overlay-top) + 230px);
             z-index: 1000;
             width: min(420px, 92vw);
             border: 1px solid rgba(255,255,255,0.2);
@@ -279,7 +283,7 @@
 
         .legend {
             position: absolute;
-            top: 90px;
+            top: var(--zone-overlay-top);
             right: 20px;
             background: rgba(255,255,255,0.95);
             padding: 20px;
@@ -489,6 +493,12 @@
 
             #map {
                 height: calc(100vh - 120px);
+            }
+        }
+
+        @media (max-width: 1280px) {
+            :root {
+                --zone-overlay-top: 210px;
             }
         }
     
