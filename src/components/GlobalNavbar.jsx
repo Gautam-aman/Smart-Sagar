@@ -2,11 +2,11 @@ import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { to: '/', label: 'Home' },
-  { to: '/dashoardfinal/index.html', label: 'Research' },
   { to: '/fish-population/fishing-zone-map.html', label: 'Fishing Zones' },
   { to: '/wether/index.html', label: 'Marine Weather' },
-  { to: '/sos/sos-emergency.html', label: 'SOS' },
   { to: '/fish_detect/index.html', label: 'Fish Detect' },
+  { to: '/dashoardfinal/index.html', label: 'Research' },
+  { to: '/sos/sos-emergency.html', label: 'SOS' },
 ];
 
 export default function GlobalNavbar() {
@@ -21,7 +21,9 @@ export default function GlobalNavbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `global-nav-link${isActive ? ' active' : ''}`}
+              className={({ isActive }) =>
+                `global-nav-link${item.label === 'SOS' ? ' sos-link' : ''}${isActive ? ' active' : ''}`
+              }
             >
               {item.label}
             </NavLink>
