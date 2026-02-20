@@ -267,7 +267,7 @@ function navigateToStation() {
         Opening Maps...
     `;
 
-    const opened = openGoogleMapsNavigation(nearestStation);
+    openGoogleMapsNavigation(nearestStation);
     button.innerHTML = `
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M3 7v6l7-3 7 3V7l-7-3-7 3z" fill="currentColor"/>
@@ -275,9 +275,6 @@ function navigateToStation() {
         </svg>
         Navigate to Station
     `;
-    if (opened === false) {
-        alert('Popup blocked. Please allow popups for this site.');
-    }
 }
 
 // Navigate to specific station
@@ -315,12 +312,8 @@ function openGoogleMapsNavigation(station) {
         window.location.href = appleUrl;
         return true;
     } else {
-        // Desktop or other - open Google Maps web
-        const popup = window.open(mapsUrl, '_blank', 'noopener');
-        if (!popup) {
-            window.location.href = mapsUrl;
-            return false;
-        }
+        // Desktop or other - open Google Maps in a single new tab
+        window.open(mapsUrl, '_blank', 'noopener');
         return true;
     }
 

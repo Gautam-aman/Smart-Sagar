@@ -158,7 +158,7 @@ export default function SosPage() {
               Emergency Contact
             </button>
 
-            <button className="navigate-btn" id="navigateBtn" onClick={() => window.navigateToStation?.()} disabled>
+            <button className="navigate-btn" id="navigateBtn" onClick={() => window.navigateToStation?.()}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M3 7v6l7-3 7 3V7l-7-3-7 3z" fill="currentColor" />
                 <path d="M10 14v6" stroke="currentColor" strokeWidth="2" />
