@@ -1,0 +1,278 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 3515 >>
+stream
+BT
+/F1 11 Tf
+48 783 Td
+(Smart Sagar — Project Summary) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Overview) Tj
+0 -14 Td
+(Smart Sagar is a marine operations dashboard designed to support fishing crews and coastal) Tj
+0 -14 Td
+(operations. It combines a modern React + Vite application shell with legacy HTML/JS tools, allowing) Tj
+0 -14 Td
+(older dashboards to run inside the new single‑page app. The goal is to provide a unified control) Tj
+0 -14 Td
+(deck for safety, weather, fish detection, and biodiversity intelligence without rewriting all legacy) Tj
+0 -14 Td
+(tools at once.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Problems It Solves) Tj
+0 -14 Td
+(- Operational awareness: Consolidates weather, safety, fish population, and map intelligence in one) Tj
+0 -14 Td
+(place.) Tj
+0 -14 Td
+(- Faster decision‑making: Provides quick recommendations, alerts, and risk summaries.) Tj
+0 -14 Td
+(- Legacy preservation: Keeps existing HTML tools working while adding new React screens.) Tj
+0 -14 Td
+(- Field usability: Lightweight client‑side UI that runs as a static web app.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Core User Workflows) Tj
+0 -14 Td
+(- Main dashboard: View operational status, weather, trip planning, and AI copilot quick actions.) Tj
+0 -14 Td
+(- Fish detect: Type a species name, auto‑complete suggestions appear, predict population trend and) Tj
+0 -14 Td
+(extinction risk, and visualize habitats on a map.) Tj
+0 -14 Td
+(- Marine weather: Interactive map with click‑to‑inspect weather and risk summaries; export and) Tj
+0 -14 Td
+(comparison tools.) Tj
+0 -14 Td
+(- SOS emergency: Create an incident profile, share location, find nearest coastal station, and) Tj
+0 -14 Td
+(trigger distress protocols.) Tj
+0 -14 Td
+(- Legacy biodiversity explorer: Fetch biodiversity occurrence data from public sources and render in) Tj
+0 -14 Td
+(map/analytics views.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(High‑Level Architecture) Tj
+0 -14 Td
+(- React app shell \(Vite + React Router\) provides navigation and layout.) Tj
+0 -14 Td
+(- React pages either render UI directly \(Home, SOS, Fish Detect, Weather\) or load legacy HTML tools) Tj
+0 -14 Td
+(inside a wrapper.) Tj
+0 -14 Td
+(- Legacy tools live in public/legacy and are fetched at runtime by the React app.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(How It Works \(Detailed\)) Tj
+0 -14 Td
+(1\) App shell and routing) Tj
+0 -14 Td
+(- src/App.jsx wires routes with react-router-dom.) Tj
+0 -14 Td
+(- Global overlays and nav live in src/components \(e.g., Fish3DOverlay, GlobalNavbar\).) Tj
+0 -14 Td
+(- Each route is either a React page or a LegacyPage wrapper.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(2\) React pages with legacy assets) Tj
+0 -14 Td
+(- React pages \(Home, SOS, Weather, Fish Detect\) call usePageAssets.) Tj
+0 -14 Td
+(- usePageAssets injects legacy CSS/JS assets and also attaches a shared ui-theme.css for consistent) Tj
+0 -14 Td
+(styling.) Tj
+0 -14 Td
+(- This lets the page behave like the legacy HTML version while being rendered inside React.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(3\) Legacy page hydration) Tj
+0 -14 Td
+(- src/LegacyPage.jsx fetches the legacy HTML from /public/legacy via /legacy/* routes.) Tj
+0 -14 Td
+(- It parses HTML, injects link/script/style tags into the current document, rewrites asset URLs, and) Tj
+0 -14 Td
+(loads scripts sequentially.) Tj
+0 -14 Td
+(- It also dispatches DOMContentLoaded and load events so existing scripts run without changes.) Tj
+0 -14 Td
+(- Internal legacy links are intercepted and routed through React Router.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Key Features by Page) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 3373 >>
+stream
+BT
+/F1 11 Tf
+48 783 Td
+(- Home dashboard \(src/pages/HomePage.jsx\)) Tj
+0 -14 Td
+(  - Loads legacy styles and scripts, plus Google Translate.) Tj
+0 -14 Td
+(  - Uses browser geolocation and fetches live weather from Open‑Meteo API.) Tj
+0 -14 Td
+(  - Shows a synthetic “AI Marine Copilot” panel with quick actions; uses Chatbase embed for optional) Tj
+0 -14 Td
+(chat.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Fish Detect \(src/pages/FishDetectPage.jsx + public/legacy/fish_detect/script.js\)) Tj
+0 -14 Td
+(  - Autocomplete for fish species and prediction model for population trend and extinction risk.) Tj
+0 -14 Td
+(  - Uses Leaflet for habitat map and markers.) Tj
+0 -14 Td
+(  - Local fish database is stored in JS and used to generate predictions; export to JSON is) Tj
+0 -14 Td
+(available.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Weather \(src/pages/WeatherPage.jsx + public/legacy/wether/script.js\)) Tj
+0 -14 Td
+(  - Interactive Leaflet map; click locations to fetch Open‑Meteo forecasts.) Tj
+0 -14 Td
+(  - Displays storm alerts, risk intelligence, comparisons, and export options.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- SOS \(src/pages/SosPage.jsx + public/legacy/sos/sos-emergency.js\)) Tj
+0 -14 Td
+(  - Emergency incident profile, crew and severity tracking, location sharing, nearest station) Tj
+0 -14 Td
+(lookup.) Tj
+0 -14 Td
+(  - UX optimized for rapid response.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Legacy biodiversity explorer \(public/legacy/dashoardfinal/index.html\)) Tj
+0 -14 Td
+(  - Uses GBIF and OBIS public APIs for occurrence data and biodiversity insights.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tech Stack) Tj
+0 -14 Td
+(- Frontend: React 18, React Router DOM 6, Vite 5) Tj
+0 -14 Td
+(- Mapping: Leaflet + OpenStreetMap tiles \(legacy pages\)) Tj
+0 -14 Td
+(- Styling: Custom CSS + shared ui-theme.css) Tj
+0 -14 Td
+(- Third‑party services: Open‑Meteo \(weather\), Chatbase \(optional chat\), Google Translate) Tj
+0 -14 Td
+(- Legacy assets: HTML/CSS/JS served from public/legacy) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Backend / Data Layer \(Current State\)) Tj
+0 -14 Td
+(- There is no dedicated backend in this repository.) Tj
+0 -14 Td
+(- All logic runs client‑side in the browser.) Tj
+0 -14 Td
+(- Data sources are public APIs \(Open‑Meteo, GBIF, OBIS\) or local static JSON/JS in public/legacy.) Tj
+0 -14 Td
+(- Persistence is not implemented; session data is in memory unless exported \(e.g., Fish Detect) Tj
+0 -14 Td
+(export JSON\).) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Runtime Data Flow \(Example: Fish Detect\)) Tj
+0 -14 Td
+(1\) User types a species name.) Tj
+0 -14 Td
+(2\) Autocomplete suggestions come from the local fish database in) Tj
+0 -14 Td
+(public/legacy/fish_detect/script.js.) Tj
+0 -14 Td
+(3\) Prediction logic runs client‑side and updates UI cards.) Tj
+0 -14 Td
+(4\) Habitat locations are plotted on Leaflet map; markers are colored by risk status.) Tj
+0 -14 Td
+(5\) User can export the prediction report as JSON.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Why This Architecture) Tj
+0 -14 Td
+(- Allows rapid delivery of new React pages while preserving existing tools.) Tj
+0 -14 Td
+(- Minimizes risk by keeping legacy behaviors intact.) Tj
+0 -14 Td
+(- Provides a single deployment artifact \(static assets + Vite build output\).) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Known Gaps / Next Steps \(If Needed\)) Tj
+0 -14 Td
+(- Add a real backend for user accounts, persistence, audit logs, and analytics.) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 212 >>
+stream
+BT
+/F1 11 Tf
+48 783 Td
+(- Centralize data ingestion and caching to reduce API calls from the client.) Tj
+0 -14 Td
+(- Introduce authentication and role‑based access for operational systems.) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000197 00000 n 
+0000003764 00000 n 
+0000003890 00000 n 
+0000007315 00000 n 
+0000007441 00000 n 
+0000007704 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+7830
+%%EOF

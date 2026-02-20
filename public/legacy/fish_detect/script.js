@@ -1,5 +1,96 @@
 // Fish database (in production, this would come from an API)
 var fishDatabase = {
+    "Rohu": {
+        scientific_name: "Labeo rohita",
+        locations: [
+            {lat: 25.6, lng: 85.1, region: "Ganga Basin, Bihar", status: "safe"},
+            {lat: 22.6, lng: 88.4, region: "Hooghly River, West Bengal", status: "caution"},
+            {lat: 21.2, lng: 81.6, region: "Mahanadi Tributaries, Chhattisgarh", status: "safe"}
+        ],
+        current_status: "stable",
+        population_trend: 0.8,
+        extinction_risk: "low",
+        conservation_status: "Least Concern",
+        habitat_depth: "1-20m"
+    },
+    "Catla": {
+        scientific_name: "Catla catla",
+        locations: [
+            {lat: 23.3, lng: 88.5, region: "Ganga Delta, West Bengal", status: "caution"},
+            {lat: 24.8, lng: 84.4, region: "Son River, Bihar", status: "safe"},
+            {lat: 20.3, lng: 85.8, region: "Mahanadi River, Odisha", status: "safe"}
+        ],
+        current_status: "stable",
+        population_trend: 0.5,
+        extinction_risk: "low",
+        conservation_status: "Least Concern",
+        habitat_depth: "2-25m"
+    },
+    "Mrigal": {
+        scientific_name: "Cirrhinus mrigala",
+        locations: [
+            {lat: 26.8, lng: 80.9, region: "Gomti River, Uttar Pradesh", status: "safe"},
+            {lat: 21.1, lng: 79.0, region: "Wainganga, Maharashtra", status: "caution"},
+            {lat: 23.0, lng: 72.6, region: "Sabarmati, Gujarat", status: "safe"}
+        ],
+        current_status: "stable",
+        population_trend: 0.6,
+        extinction_risk: "low",
+        conservation_status: "Least Concern",
+        habitat_depth: "2-30m"
+    },
+    "Hilsa": {
+        scientific_name: "Tenualosa ilisha",
+        locations: [
+            {lat: 22.3, lng: 91.8, region: "Bay of Bengal, Bangladesh", status: "caution"},
+            {lat: 21.6, lng: 88.3, region: "Sundarbans Estuary, India", status: "caution"},
+            {lat: 18.9, lng: 72.8, region: "Arabian Sea, Maharashtra", status: "safe"}
+        ],
+        current_status: "declining",
+        population_trend: -1.8,
+        extinction_risk: "moderate",
+        conservation_status: "Least Concern",
+        habitat_depth: "0-50m"
+    },
+    "Indian Mackerel": {
+        scientific_name: "Rastrelliger kanagurta",
+        locations: [
+            {lat: 15.3, lng: 73.9, region: "Konkan Coast, Goa", status: "safe"},
+            {lat: 8.5, lng: 76.9, region: "Kerala Coast, Arabian Sea", status: "caution"},
+            {lat: 13.1, lng: 80.3, region: "Chennai Coast, Bay of Bengal", status: "safe"}
+        ],
+        current_status: "stable",
+        population_trend: 0.4,
+        extinction_risk: "low",
+        conservation_status: "Least Concern",
+        habitat_depth: "0-80m"
+    },
+    "Pomfret (Silver)": {
+        scientific_name: "Pampus argenteus",
+        locations: [
+            {lat: 20.9, lng: 70.3, region: "Saurashtra Coast, Gujarat", status: "caution"},
+            {lat: 19.1, lng: 72.7, region: "Mumbai Coast, Maharashtra", status: "safe"},
+            {lat: 16.9, lng: 82.2, region: "Godavari Delta, Andhra Pradesh", status: "safe"}
+        ],
+        current_status: "stable",
+        population_trend: 0.3,
+        extinction_risk: "low",
+        conservation_status: "Least Concern",
+        habitat_depth: "5-50m"
+    },
+    "Giant Tiger Prawn": {
+        scientific_name: "Penaeus monodon",
+        locations: [
+            {lat: 21.6, lng: 88.3, region: "Sundarbans, West Bengal", status: "caution"},
+            {lat: 17.7, lng: 83.3, region: "Andhra Coast, Bay of Bengal", status: "safe"},
+            {lat: 9.9, lng: 76.3, region: "Cochin Backwaters, Kerala", status: "safe"}
+        ],
+        current_status: "stable",
+        population_trend: 0.7,
+        extinction_risk: "low",
+        conservation_status: "Least Concern",
+        habitat_depth: "0-40m"
+    },
     "Atlantic Cod": {
         scientific_name: "Gadus morhua",
         locations: [

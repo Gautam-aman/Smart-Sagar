@@ -80,6 +80,7 @@ input:focus {
     left: 0;
     right: 0;
     background: white;
+    color: #1f2937;
     border: 1px solid #ddd;
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -91,6 +92,7 @@ input:focus {
 
 .suggestion-item {
     padding: 10px;
+    color: #1f2937;
     cursor: pointer;
     border-bottom: 1px solid #eee;
 }
