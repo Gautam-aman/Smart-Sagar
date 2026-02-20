@@ -216,20 +216,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="nav-buttons nav-prof">
-        <Link to="/sos/sos-emergency.html" className="nav-btn-sos">
-          <span>Emergency SoS</span>
-        </Link>
-        <Link to="/dashoardfinal/index.html" className="nav-btn">
-          <span>Research Intelligence</span>
-        </Link>
-        <Link to="/fish-population/fishing-zone-map.html" className="nav-btn">
-          <span>Population Heatmap</span>
-        </Link>
-        <Link to="/wether/index.html" className="nav-btn">
-          <span>Marine Weather Ops</span>
-        </Link>
-      </div>
+
 
       <div className="main-grid">
         <div className="dashboard-col">

@@ -1902,6 +1902,27 @@
         // Initialize everything
         var initRetryCount = 0;
         var pageBootstrapped = false;
+        var zoneRenderRetryCount = 0;
+        var zoneRenderTimer = null;
+
+        function scheduleZoneRenderRetry() {
+            if (zoneRenderRetryCount >= 24) {
+                return;
+            }
+            zoneRenderRetryCount += 1;
+            if (zoneRenderTimer) {
+                window.clearTimeout(zoneRenderTimer);
+            }
+            zoneRenderTimer = window.setTimeout(() => {
+                addZonesToMap();
+                if (map) {
+                    map.invalidateSize();
+                }
+                if (zoneLayerRegistry.size === 0 && fishingZonesData.features.length > 0) {
+                    scheduleZoneRenderRetry();
+                }
+            }, 250);
+        }
 
         function initFishingZonePage() {
             if (!map) {
@@ -1941,6 +1962,12 @@
                 return;
             }
             addZonesToMap();
+            if (map) {
+                map.whenReady(() => {
+                    addZonesToMap();
+                    map.invalidateSize();
+                });
+            }
 
             // If zones are unexpectedly empty on first run, retry automatically.
             if (zoneLayerRegistry.size === 0 && fishingZonesData.features.length > 0) {
@@ -1951,6 +1978,7 @@
                 } else {
                     setToolStatus('Zone data failed to render - please retry');
                 }
+                scheduleZoneRenderRetry();
                 return;
             }
 
@@ -1990,6 +2018,7 @@
         } else {
             initFishingZonePage();
         }
+        window.addEventListener('load', () => window.setTimeout(initFishingZonePage, 120), { once: true });
     </script>
 </body>
 </html>
