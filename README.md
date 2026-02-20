@@ -21,8 +21,7 @@ Sagar Saathi is a React + Vite marine operations dashboard that combines modern 
 
 - `src/` React app shell and pages
 - `src/LegacyPage.jsx` loader that mounts pages from `public/legacy/*`
-- `public/legacy/` legacy HTML/CSS/JS assets served by Vite
-- `fish-population/`, `fish-zone/`, `dashoardfinal/`, `dashboard-main/` source legacy content
+- `public/legacy/` canonical legacy HTML/CSS/JS assets served by Vite
 
 ## Routes
 
@@ -76,8 +75,7 @@ npm run preview
 
 ## Notes
 
-- Some folder names are preserved from legacy sources (for example `wether`, `dashoardfinal`, `fish deseases`).
-- Legacy assets are mirrored under `public/legacy/` and are the runtime source when served through React routes.
+- Legacy naming is preserved under `public/legacy/` (for example `wether`, `dashoardfinal`, `fish deseases`) to avoid breaking existing links.
 
 ## License
 
