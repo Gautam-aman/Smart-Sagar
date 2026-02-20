@@ -42,6 +42,14 @@ export default function SosPage() {
           </svg>
           Share Location
         </button>
+        <button className="action-btn" onClick={() => window.shareEmergencyDetails?.()}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2v8" stroke="currentColor" strokeWidth="2" />
+            <path d="M6 7l3 3 3-3" stroke="currentColor" strokeWidth="2" fill="none" />
+            <rect x="3" y="12" width="12" height="4" rx="1.5" stroke="currentColor" strokeWidth="2" fill="none" />
+          </svg>
+          Share Emergency Brief
+        </button>
         <button className="action-btn" onClick={() => window.exportEmergencyBrief?.()}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path d="M9 2v8" stroke="currentColor" strokeWidth="2" />

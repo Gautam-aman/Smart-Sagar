@@ -169,6 +169,28 @@ export default function HomePage() {
     return 'I analyzed your request and prepared a safe, efficiency-focused plan. You can refine by adding target zone, crew size, and trip duration.';
   };
 
+  const catchForecastScore = useMemo(() => {
+    const temp = Number.parseFloat(String(weather.temp).replace(/[^\d.-]/g, ''));
+    const wind = Number.parseFloat(String(weather.wind).replace(/[^\d.-]/g, ''));
+    const humidity = Number.parseFloat(String(weather.humidity).replace(/[^\d.-]/g, ''));
+
+    if ([temp, wind, humidity].some((v) => Number.isNaN(v))) {
+      return 72;
+    }
+
+    let score = 60;
+    if (temp >= 24 && temp <= 30) score += 12;
+    if (temp < 18 || temp > 33) score -= 10;
+
+    if (wind <= 18) score += 10;
+    if (wind >= 28) score -= 12;
+
+    if (humidity >= 55 && humidity <= 75) score += 6;
+    if (humidity < 40 || humidity > 85) score -= 6;
+
+    return Math.max(40, Math.min(92, Math.round(score)));
+  }, [weather.humidity, weather.temp, weather.wind]);
+
   const handleAssistantPrompt = async (prompt) => {
     const askChatWithoutOpening = async () => {
       try {
@@ -264,6 +286,10 @@ export default function HomePage() {
               <span className="weather-tag">Insight</span>
             </div>
             <div className="welcome-info-grid">
+              <div className="welcome-chip">
+                <span className="chip-label">Catch Forecast Score</span>
+                <span className="chip-value">{catchForecastScore} / 100</span>
+              </div>
               <div className="welcome-chip">
                 <span className="chip-label">High-Value Catch Index</span>
                 <span className="chip-value">76 / 100</span>

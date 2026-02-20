@@ -537,6 +537,44 @@ Google Maps: https://maps.google.com/?q=${userLocation.lat},${userLocation.lng}`
     }
 }
 
+function shareEmergencyDetails() {
+    const coordsText = userLocation
+        ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`
+        : 'Location unavailable';
+    const station = nearestStation
+        ? `${nearestStation.name} (${nearestStation.callSign}, ${nearestStation.freq})`
+        : 'Nearest station unavailable';
+    const distance = nearestStation
+        ? `${nearestStation.distance.toFixed(1)} km`
+        : 'Unknown';
+    const profile = emergencyProfile || {};
+
+    const brief = [
+        'Emergency Brief (Smart Sagar)',
+        `Incident: ${profile.incidentType || 'unknown'}`,
+        `Severity: ${profile.severity || 'unknown'}`,
+        `Crew Count: ${profile.crewCount || 'unknown'}`,
+        `Medical Aid Required: ${profile.medicalAidRequired ? 'Yes' : 'No'}`,
+        `Coordinates: ${coordsText}`,
+        `Nearest Station: ${station}`,
+        `Distance: ${distance}`,
+        `Timestamp: ${new Date().toLocaleString()}`
+    ].join('\\n');
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'Emergency Brief',
+            text: brief
+        });
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(brief).then(() => {
+            alert('Emergency brief copied to clipboard!');
+        });
+    } else {
+        prompt('Copy this emergency brief:', brief);
+    }
+}
+
 // Add emergency keyboard shortcuts once
 if (!window.__sosKeybindsAttached) {
     document.addEventListener('keydown', function(e) {
@@ -569,6 +607,7 @@ window.exportEmergencyBrief = exportEmergencyBrief;
 window.navigateToStation = navigateToStation;
 window.refreshLocation = refreshLocation;
 window.shareLocation = shareLocation;
+window.shareEmergencyDetails = shareEmergencyDetails;
 
 function googleTranslateElementInit() {
             new google.translate.TranslateElement(
