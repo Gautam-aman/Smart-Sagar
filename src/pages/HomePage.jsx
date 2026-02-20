@@ -324,46 +324,47 @@ export default function HomePage() {
             <h3 className="card-title">Market value</h3>
             <div className="market-grid">
               <div className="market-item">
-                <span className="fish-label">Hilsa (Ilish)</span>
-                <span className="fish-value">₹2,200 - ₹3,000</span>
+                <span className="fish-label">Bombay Duck (Bombil)</span>
+                <span className="fish-value">₹70 - ₹110</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Rohu</span>
-                <span className="fish-value">₹350 - ₹893</span>
+                <span className="fish-label">Bombay Duck (Seasonal High)</span>
+                <span className="fish-value">₹110 - ₹130</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Catla</span>
-                <span className="fish-value">₹240 - ₹525</span>
+                <span className="fish-label">Anchovies</span>
+                <span className="fish-value">₹50 - ₹80</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Pangas (Pangasius)</span>
-                <span className="fish-value">₹280 - ₹350</span>
+                <span className="fish-label">Oil Sardine</span>
+                <span className="fish-value">₹30 - ₹60</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Pomfret</span>
-                <span className="fish-value">₹620 - ₹1,150</span>
+                <span className="fish-label">Mackerel (Bangda)</span>
+                <span className="fish-value">₹180 - ₹220</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Mackerel</span>
-                <span className="fish-value">₹260 - ₹540</span>
+                <span className="fish-label">Mackerel (Seasonal High)</span>
+                <span className="fish-value">₹230 - ₹270</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Yellowfin Tuna</span>
-                <span className="fish-value">₹780 - ₹1,600</span>
+                <span className="fish-label">Ribbonfish</span>
+                <span className="fish-value">₹260 - ₹300</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Tiger Shrimp</span>
-                <span className="fish-value">₹900 - ₹1,950</span>
+                <span className="fish-label">Silver Pomfret</span>
+                <span className="fish-value">₹750 - ₹1,600</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Seabass</span>
-                <span className="fish-value">₹480 - ₹990</span>
+                <span className="fish-label">Tiger Prawns</span>
+                <span className="fish-value">₹1,200 - ₹1,500</span>
               </div>
               <div className="market-item">
-                <span className="fish-label">Sardine</span>
-                <span className="fish-value">₹180 - ₹360</span>
+                <span className="fish-label">Lobster</span>
+                <span className="fish-value">₹850 - ₹1,000</span>
               </div>
             </div>
+            <p className="market-note">Mumbai landing-site wholesale ranges (Sassoon Dock/Bhaucha Dhakka; seasonal variation)</p>
           </div>
 
           <div className="weather-card weather-today-card">
