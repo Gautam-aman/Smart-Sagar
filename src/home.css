@@ -87,6 +87,18 @@ body {
     height: calc(100vh - 150px);
 }
 
+.dashboard-gif {
+    position: fixed;
+    right: 96px;
+    bottom: 24px;
+    width: 120px;
+    height: auto;
+    z-index: 1200;
+    border-radius: 14px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
 /* Welcome Card */
 .welcome-card {
     background-image: url('/legacy/fish.gif');

@@ -199,7 +199,14 @@ export default function HomePage() {
         <div className="brand-area">
           <div className="brand-mark">SS</div>
           <div className="brand-meta">
-            <h2>Smart Sagar Control Deck</h2>
+            <h2>
+              Smart Sagar Control Deck
+              <img
+                className="brand-gif"
+                src="/legacy/fishing-bye-bye.gif"
+                alt="Fishing animation"
+              />
+            </h2>
             <p>Smart marine operations, safety and catch intelligence</p>
           </div>
         </div>
@@ -445,6 +452,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
